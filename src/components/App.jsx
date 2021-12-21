@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route, Link } from 'react-router-dom'
 import Game from './Game'
 import Players from './Players'
-import Fields from "./Fields";
+import CreationField from "./CreationField.jsx";
 
 
 
@@ -20,7 +20,7 @@ function App() {
         } />
 
         <Route path="/players" element={<Players />} />
-        <Route path="/fields" element={<Fields />} />
+        <Route path="/fields" element={<CreationField />} />
         <Route path="/game" element={<Game />} />
       </Routes>
     </div>

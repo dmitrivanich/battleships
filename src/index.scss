@@ -51,7 +51,7 @@ li {
   border-radius: 20px;
   font-size: 15px;
   font-weight: bold;
-  color: rgb(122, 122, 122);
+  color: rgb(0, 97, 100);
   cursor: pointer;
   &:hover {
     filter: opacity(0.7);
@@ -63,7 +63,8 @@ li {
   width: 70vw;
   height: 70vw;
   // filter: opacity(0.7);
-  color: #a3b7c5;
+  color: rgb(199, 0, 0);
+  cursor: pointer;
 }
 .fieldSizeValue {
   margin: 0 10px;

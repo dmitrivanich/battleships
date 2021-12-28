@@ -20,6 +20,8 @@ export default function CreationPlayers() {
     dispatch(removePlayerName(index))
   }
 
+
+
   return (
     <div className='creationPlayers'>
       <h1>Список игроков:</h1>

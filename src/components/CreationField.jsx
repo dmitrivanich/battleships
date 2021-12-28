@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Field from "./Field"
 
@@ -6,17 +6,29 @@ export default function CreationField() {
   const size = useSelector(state => state.games.fieldSize)
   const playersNames = useSelector(state => state.games.playersNames)
   const playersFields = useSelector(state => state.games.playersFields)
+  const [selectedPlayer, setSelectedPlayer] = useState(0)
 
+  const nextPlayer = () => {
+    setSelectedPlayer(+selectedPlayer + 1)
+  }
 
   return <div className='creationFields'>
 
     <h1>СОЗДАНИЕ ПОЛЕЙ</h1>
 
-    {playersNames.map((player, index) => (
-      <div className="grid" key={index}>
-        <Field names={playersNames} fields={playersFields} fieldSize={size} index={index} />
-      </div>
-    ))}
+    {playersNames.map((name, index) => {
+      if (selectedPlayer === index) {
+        return (<div className="grid" key={index}>
+          <Field
+            names={playersNames}
+            fields={playersFields}
+            fieldSize={size}
+            index={index}
+            nextPlayer={nextPlayer}
+          />
+        </div>)
+      }
+    })}
 
     <button onClick={() => { }}>TEST</button>
   </div >

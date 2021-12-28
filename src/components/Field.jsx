@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { useSelector } from "react-redux"
 import { addField } from "../redux/gameSlice"
 
-function Field({ names, fieldSize, fields, index }) {
+function Field({ names, fieldSize, fields, index, nextPlayer }) {
   const name = names[index]
   const field = fields[index] //удаление заморозки от redux
   const size = fieldSize
@@ -297,7 +297,7 @@ function Field({ names, fieldSize, fields, index }) {
 
           <button
             id="next"
-            onClick={createField}
+            onClick={() => { createField(); nextPlayer() }}
           >NEXT</button>
 
         }

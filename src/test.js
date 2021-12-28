@@ -1,9 +1,5 @@
 const cl = console.log
 
-var a = {
-  aa: 1,
-  bb: 2,
-  cc: 3
-}
+var a = new Array(3).fill(new Array(3).fill(0))
 
 cl(a)

@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route, Link } from 'react-router-dom';
 import CreationPlayers from './CreationPlayers';
 import CreationField from "./CreationField.jsx";
+import Battle from "./Battle.jsx";
 import { NextIcon } from "../icons";
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -50,6 +51,7 @@ function Menu() {
 
         <Route path="/players" element={<CreationPlayers />} />
         <Route path="/fields" element={<CreationField />} />
+        <Route path="/battle" element={<Battle />} />
       </Routes>
     </div>
   );

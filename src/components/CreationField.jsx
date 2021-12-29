@@ -24,10 +24,11 @@ export default function CreationField() {
             fields={playersFields}
             fieldSize={size}
             index={index}
+            numberOfSelectedPlayer={selectedPlayer + 1}
             nextPlayer={nextPlayer}
           />
         </div>)
-      }
+      } else return (null)
     })}
 
     <button onClick={() => { }}>TEST</button>

@@ -4,19 +4,19 @@ const gameSlice = createSlice({
   name: 'games',
   initialState: {
     fieldSize: 10,
-    playersNames: [],
-    playersFields: []
+    playersNames: ["GEORGY BOTTO"],
+    playersFields: [[...new Array(10).fill(new Array(10).fill(0))]]
   },
   reducers: {
     changeSizeOfField(state, action) {
       state.fieldSize = +action.payload
     },
-    addPlayerName(state, action) {
+    addPlayer(state, action) {
       let size = state.fieldSize
       state.playersNames.push(action.payload)
       state.playersFields.push(new Array(size).fill(new Array(size).fill(0)))
     },
-    removePlayerName(state, action) {
+    removePlayer(state, action) {
       state.playersNames.splice(action.payload, 1)
       state.playersFields.splice(action.payload, 1)
     },
@@ -29,5 +29,5 @@ const gameSlice = createSlice({
   }
 })
 
-export const { addPlayerName, removePlayerName, changeSizeOfField, addField } = gameSlice.actions;
+export const { addPlayer, removePlayer, changeSizeOfField, addField } = gameSlice.actions;
 export default gameSlice.reducer;

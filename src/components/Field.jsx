@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { useSelector } from "react-redux"
 import { addField } from "../redux/gameSlice"
+import { Link } from "react-router-dom"
 
-function Field({ names, fieldSize, fields, index, nextPlayer }) {
+function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPlayer }) {
   const name = names[index]
   const field = fields[index] //удаление заморозки от redux
   const size = fieldSize
 
 
   const [quantityShips, setQuantityShips] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 })
-  const [shipsOfLeft, setShipsOfLeft] = useState([4, 3, 2, 1, 0.4])
+  const [minimumOfShips, setMinimumOfShips] = useState([])
   const [arrayBoxes, setArrayBoxes] = useState(field)
 
   const canvasRef = useRef(null)
@@ -19,8 +19,10 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    setShipsOfLeft(shipsOfLeft.map(value => Math.round(value * (size / 10))))
-  }, [])
+    const ships = [4, 3, 2, 1, 0.4]
+    setMinimumOfShips(ships.map(value => Math.round(value * (size / 10))))
+    setArrayBoxes(doRules(field).field)
+  }, [field, size])
 
   useEffect(() => {
     function drawGrid() {
@@ -95,13 +97,10 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
     //рендерит сетку и корабли
   }, [arrayBoxes])
 
-  useEffect(() => {
-    setArrayBoxes(doRules(field))
-  }, [])
 
   function drawBoxes(e) {
     const rect = e.target.getBoundingClientRect()
-    const ctx = e.target.getContext('2d')
+    // const ctx = e.target.getContext('2d')
 
     // Координаты, относительно начала координат canvas
     const x = e.clientX - Math.round(rect.left)
@@ -160,10 +159,9 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
 
       editedArray.splice(k, 1, newRow)//обновляет изменённую строку
 
-      setArrayBoxes(doRules(editedArray))
+      setArrayBoxes(doRules(editedArray).field)
     }
 
-    // setArrayBoxes(doRules(field))
     drawBox(indexBoxX, indexBoxY)
   }
 
@@ -251,26 +249,48 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
 
     })
 
-    setQuantityShips({
+    const newQuantityShips = {
       0: ships[0].length,
       1: ships[1].length / 2,
       2: ships[2].length / 3,
       3: ships[3].length / 4,
       4: ships[4].length / 5
-    })
+    }
 
-    return field
+    setQuantityShips(newQuantityShips)
+
+    return { field: field, newQuantityShips: newQuantityShips }
   }
 
   function createField() {
     dispatch(addField({ index: index, field: arrayBoxes }))
   }
 
+  function createRandomField(size) {
+    const shipsFor_10_size = [4, 3, 2, 1, 0.4]
+    //Массив с числом кораблей всех типов, для размера поля "10"
+    const newField = new Array(size).fill(new Array(size).fill(0)) //новое поле
+    const shipsCounter = shipsFor_10_size.map(value => Math.round(value * (size / 10)))
+    //Массив с колличествами незаполненных кораблей для всех типов, в зависимости от размера поля
+
+    for (let i = 0; i < shipsCounter[0]; i++) {
+      const rY = Math.floor(Math.random() * size) //случайный индекс для строки
+      const rX = Math.floor(Math.random() * size) //случайный индекс для элемента строки
+
+      const randomRow = newField[rY]
+      const randomBox = randomRow[rX]
+        //искать координату без соседей
+      console.log(randomRow, randomBox)
+    }
+
+  }
+
   return (
     <>
       <h2>{name}</h2>
+
       <ul id='shipsList' ref={shipListRef}>
-        {!!shipsOfLeft && shipsOfLeft.map((el, ind) => {
+        {!!minimumOfShips && minimumOfShips.map((el, ind) => {
           if (el) {
             return (
               <li key={ind}
@@ -285,20 +305,36 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
           } else { return null }
         })}
       </ul>
+
       <div className="grid">
+
         <button
           id="randomDraw"
+          onClick={() => { createRandomField(fieldSize) }}
         >RANDOM</button>
 
-        {(quantityShips[0] === shipsOfLeft[0]) &&
-          (quantityShips[1] === shipsOfLeft[1]) &&
-          (quantityShips[2] === shipsOfLeft[2]) &&
-          (quantityShips[3] === shipsOfLeft[3]) &&
+        <p></p>
+        {(quantityShips[0] === minimumOfShips[0]) &&
+          (quantityShips[1] === minimumOfShips[1]) &&
+          (quantityShips[2] === minimumOfShips[2]) &&
+          (quantityShips[3] === minimumOfShips[3]) &&
 
-          <button
-            id="next"
-            onClick={() => { createField(); nextPlayer() }}
-          >NEXT</button>
+          <>
+            {numberOfSelectedPlayer === names.length &&
+              <Link
+                id="next"
+                to="/battle"
+                onClick={createField}
+              >START GAME</Link>}
+
+            {numberOfSelectedPlayer !== names.length &&
+              <button
+                id="next"
+                onClick={() => { createField(); nextPlayer() }}
+              >NEXT</button>}
+          </>
+
+
 
         }
         <canvas
@@ -312,13 +348,7 @@ function Field({ names, fieldSize, fields, index, nextPlayer }) {
           }}
         ></canvas >
       </div>
-
-
-
     </>
-
-
-
   )
 }
 

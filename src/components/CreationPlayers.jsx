@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { addPlayerName, removePlayerName } from '../redux/gameSlice'
+import { addPlayer, removePlayer } from '../redux/gameSlice'
 import { CreateIcon, TrashIcon } from "../icons"
 
 
@@ -12,12 +12,12 @@ export default function CreationPlayers() {
   const dispatch = useDispatch()
 
   const createPlayer = () => {
-    dispatch(addPlayerName(playerName))
+    dispatch(addPlayer(playerName))
     setPlayerName('')
   }
 
   const deletePlayer = (index) => {
-    dispatch(removePlayerName(index))
+    dispatch(removePlayer(index))
   }
 
 

@@ -2,11 +2,13 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import Field from "./Field"
 
+
 export default function CreationField() {
   const size = useSelector(state => state.games.fieldSize)
   const playersNames = useSelector(state => state.games.playersNames)
   const playersFields = useSelector(state => state.games.playersFields)
   const [selectedPlayer, setSelectedPlayer] = useState(0)
+
 
   const nextPlayer = () => {
     setSelectedPlayer(+selectedPlayer + 1)

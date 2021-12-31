@@ -1,5 +1,5 @@
-const cl = console.log
 
-var a = new Array(3).fill(new Array(3).fill(0))
 
-cl(a)
+var a = [1, 2, 3, 4, 5, 6]
+a.splice(0, 3, 9)
+console.log(a)

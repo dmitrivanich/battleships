@@ -36,8 +36,8 @@ function Menu() {
                 }}
                 id='fieldSize'
                 type="range"
-                min='8'
-                max='20'
+                min='6'
+                max='50'
                 step="2"
                 value={fieldSize} />
             </div>

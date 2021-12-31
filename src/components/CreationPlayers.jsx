@@ -20,8 +20,6 @@ export default function CreationPlayers() {
     dispatch(removePlayer(index))
   }
 
-
-
   return (
     <div className='creationPlayers'>
       <h1>Список игроков:</h1>
@@ -43,7 +41,7 @@ export default function CreationPlayers() {
           onChange={e => setPlayerName(e.target.value)}
         />
 
-        <button className="create" onClick={createPlayer}>Create <CreateIcon /></button>
+        <button className="createPlayer" onClick={createPlayer}>Create <CreateIcon /></button>
       </div>
 
       <Link to="/fields" className='toCreate fields'>Создать поля</Link>

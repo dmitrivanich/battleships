@@ -3,9 +3,9 @@ import { createSlice } from '@reduxjs/toolkit';
 const gameSlice = createSlice({
   name: 'games',
   initialState: {
-    fieldSize: 10,
+    fieldSize: 40,
     playersNames: ["GEORGY BOTTO"],
-    playersFields: [[...new Array(10).fill(new Array(10).fill(0))]]
+    playersFields: [[...new Array(40).fill(new Array(40).fill(0))]]
   },
   reducers: {
     changeSizeOfField(state, action) {

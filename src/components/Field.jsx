@@ -1,28 +1,28 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { addField, createBot } from "../redux/gameSlice"
+import { useDispatch, useSelector } from 'react-redux'
+import { addField } from "../redux/gameSlice"
 import { Link } from "react-router-dom"
 
 function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPlayer }) {
-  const name = names[index]
   const field = fields[index] //удаление заморозки от redux
   const size = fieldSize
-
+  const shipsRate = useSelector(state => state.games.shipsRate)
 
   const [quantityShips, setQuantityShips] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 })
-  const [minimumOfShips, setMinimumOfShips] = useState([])
+  const [minimumOfShips, setMinimumOfShips] = useState(shipsRate)
   const [arrayBoxes, setArrayBoxes] = useState(field)
+
 
   const canvasRef = useRef(null)
   const shipListRef = useRef(null)
 
   const dispatch = useDispatch()
 
-
   useEffect(() => {
-    const ships = [4, 3, 2, 1, 0.4]
-    setMinimumOfShips(ships.map(value => Math.round(value * (size / 10))))
+    setMinimumOfShips([...shipsRate].map(value => Math.round(value)))
     setArrayBoxes(doRules(field).field)
+    canvasRef.current.style.width = `${size * 50}px`
+    canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
   useEffect(() => {
@@ -39,13 +39,13 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
         if (arrayBoxes.length > 0) {
           for (let i = 0; i < arrayBoxes.length; i++) {
             arrayBoxes[i].forEach((el, ind) => {
-              let space = 10
+              let space = 500 / size
               let x = Math.round((box.width) * (ind))
               let y = Math.round(box.height * i)
               // В массиве ArrayBoxes содержатся элементы 0(пустая клетка) и 1(корабль)
               // space - отступ между клетками 
               function drawBox() {//рисует клетку
-                ctx.lineWidth = 5
+                ctx.lineWidth = 200 / size
                 ctx.fillStyle = "#8da6bb"
                 ctx.fillRect(x, y, box.width, box.height)
                 ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
@@ -76,7 +76,7 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
                   break;
                 default:
                   ctx.strokeStyle = "white";
-                  ctx.lineWidth = 8
+                  ctx.lineWidth = 300 / size
                   ctx.fillStyle = `#b8c9d6`
                   ctx.fillRect(x, y, box.width, box.height)
                   ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
@@ -273,25 +273,169 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
 
 
 
-  function createRandomField(size) {
+  function randomizeField(size) {
     const shipsFor_10_size = [4, 3, 2, 1, 0.4]
     //Массив с числом кораблей всех типов, для размера поля "10"
     const newField = new Array(size).fill(new Array(size).fill(0)) //новое поле
-    // const newField = [
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 1, 0, 0, 0, 0, 1, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-    //   [0, 0, 1, 0, 0, 0, 0, 0, 1, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    //   [0, 1, 0, 0, 0, 0, 0, 1, 0, 0],
-    //   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
 
     const shipsCounter = shipsFor_10_size.map(value => Math.round(value * (size / 10)))
     //Массив с колличествами незаполненных кораблей для всех типов, в зависимости от размера поля
 
+    for (let i = 0; i < shipsCounter[4]; i++) {//для пятиклеточных
+
+      let X = Math.floor(Math.random() * size) //случайный индекс для строки
+      let Y = Math.floor(Math.random() * size) //случайный индекс для элемента строки
+
+      let randomRow = newField[Y].slice() //копия случайной строки
+
+      if (newField[Y][X] === 0) {
+        if (
+          newField[Y][X + 1] === 0 &&
+          newField[Y][X + 2] === 0 &&
+          newField[Y][X + 3] === 0 &&
+          newField[Y][X + 4] === 0 &&
+          !newField[Y][X + 5] &&
+          (newField[Y + 1] && !newField[Y + 1][X + 2]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 2]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 3]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 3]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 4]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 4]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 5]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 5])
+        ) {
+          if (//есть ли соседи на расстоянии 1 клетка вокруг выбранной
+            !newField[Y][X - 1] &&
+            (newField[Y - 1] && !newField[Y - 1][X - 1]) &&
+            (newField[Y - 1] && !newField[Y - 1][X]) &&
+            (newField[Y - 1] && !newField[Y - 1][X + 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X - 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X]) &&
+            (newField[Y + 1] && !newField[Y + 1][X + 1])
+          ) {
+            randomRow.splice(X, 1, 5)
+            randomRow.splice(X + 1, 1, 5)
+            randomRow.splice(X + 2, 1, 5)
+            randomRow.splice(X + 3, 1, 5)
+            randomRow.splice(X + 4, 1, 5)
+            newField.splice(Y, 1, randomRow)
+
+          } else {
+            // console.log('У второй клетки соседи!')
+            i--
+          }
+
+
+        } else {
+          // console.log('Вниз и право поместить никак нельзя!')
+          i--
+        }
+
+      } else {
+        // console.log(X, Y, 'клетка занята')
+        i--
+      }
+    }
+
+    for (let i = 0; i < shipsCounter[3]; i++) {//для четвероклеточных
+
+      let X = Math.floor(Math.random() * size) //случайный индекс для строки
+      let Y = Math.floor(Math.random() * size) //случайный индекс для элемента строки
+
+      let randomRow = newField[Y].slice() //копия случайной строки
+
+      if (newField[Y][X] === 0) {
+        if (
+          newField[Y][X + 1] === 0 &&
+          newField[Y][X + 2] === 0 &&
+          newField[Y][X + 3] === 0 &&
+          !newField[Y][X + 4] &&
+          (newField[Y + 1] && !newField[Y + 1][X + 2]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 2]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 3]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 3]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 4]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 4])
+        ) {
+          if (//есть ли соседи на расстоянии 1 клетка вокруг выбранной
+            !newField[Y][X - 1] &&
+            (newField[Y - 1] && !newField[Y - 1][X - 1]) &&
+            (newField[Y - 1] && !newField[Y - 1][X]) &&
+            (newField[Y - 1] && !newField[Y - 1][X + 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X - 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X]) &&
+            (newField[Y + 1] && !newField[Y + 1][X + 1])
+          ) {
+            randomRow.splice(X, 1, 4)
+            randomRow.splice(X + 1, 1, 4)
+            randomRow.splice(X + 2, 1, 4)
+            randomRow.splice(X + 3, 1, 4)
+            newField.splice(Y, 1, randomRow)
+            // console.log('Соседей нет!')
+          } else {
+            // console.log('У второй клетки соседи!')
+            i--
+          }
+
+
+        } else {
+          // console.log('Вниз и право поместить никак нельзя!')
+          i--
+        }
+
+      } else {
+        // console.log(X, Y, 'клетка занята')
+        i--
+      }
+    }
+
+    for (let i = 0; i < shipsCounter[2]; i++) {//для троичных кораблей
+
+      let X = Math.floor(Math.random() * size) //случайный индекс для строки
+      let Y = Math.floor(Math.random() * size) //случайный индекс для элемента строки
+
+      let randomRow = newField[Y].slice() //копия случайной строки
+
+      if (newField[Y][X] === 0) {
+        if (
+          newField[Y][X + 1] === 0 &&
+          newField[Y][X + 2] === 0 &&
+          !newField[Y][X + 3] &&
+          (newField[Y + 1] && !newField[Y + 1][X + 2]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 2]) &&
+          (newField[Y + 1] && !newField[Y - 1][X + 3]) &&
+          (newField[Y - 1] && !newField[Y - 1][X + 3])
+        ) {
+          if (//есть ли соседи на расстоянии 1 клетка вокруг выбранной
+            !newField[Y][X - 1] &&
+            (newField[Y - 1] && !newField[Y - 1][X - 1]) &&
+            (newField[Y - 1] && !newField[Y - 1][X]) &&
+            (newField[Y - 1] && !newField[Y - 1][X + 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X - 1]) &&
+            (newField[Y + 1] && !newField[Y + 1][X]) &&
+            (newField[Y + 1] && !newField[Y + 1][X + 1])
+          ) {
+            randomRow.splice(X, 1, 3)
+            randomRow.splice(X + 1, 1, 3)
+            randomRow.splice(X + 2, 1, 3)
+            newField.splice(Y, 1, randomRow)
+            // console.log('Соседей нет!')
+          } else {
+            // console.log('У второй клетки соседи!')
+            i--
+          }
+
+
+        } else {
+          // console.log('Вниз и право поместить никак нельзя!')
+          i--
+        }
+
+      } else {
+        // console.log(X, Y, 'клетка занята')
+        i--
+      }
+    }
 
     for (let i = 0; i < shipsCounter[1]; i++) {//для двоичных кораблей
 
@@ -319,21 +463,20 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
             randomRow.splice(X, 1, 2)
             randomRow.splice(X + 1, 1, 2)
             newField.splice(Y, 1, randomRow)
-            // setArrayBoxes(newField)
-            console.log('Соседей нет!')
+            // console.log('Соседей нет!')
           } else {
-            console.log('У второй клетки соседи!')
+            // console.log('У второй клетки соседи!')
             i--
           }
 
 
         } else {
-          console.log('Вниз и право поместить никак нельзя!')
+          // console.log('Вниз и право поместить никак нельзя!')
           i--
         }
 
       } else {
-        console.log(X, Y, 'клетка занята')
+        // console.log(X, Y, 'клетка занята')
         i--
       }
     }
@@ -357,17 +500,17 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
           (newField[Y + 1] && newField[Y + 1][X]) ||
           (newField[Y + 1] && newField[Y + 1][X + 1])
         ) {
-          console.log(X, Y, 'Соседи есть')
+          // console.log(X, Y, 'Соседи есть')
           i--
         } else {
-          console.log('Соседей нет', X, Y)
+          // console.log('Соседей нет', X, Y)
           randomRow.splice(X, 1, 1)
           newField.splice(Y, 1, randomRow)
           // setArrayBoxes(newField)
 
         }
       } else {
-        console.log(X, Y, 'клетка занята')
+        // console.log(X, Y, 'клетка занята')
         i--
       }
     }
@@ -376,6 +519,17 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
     setArrayBoxes(doRules(newField).field)
   }
 
+  // function beautyEffectForRandomizeField(size) {
+  //   let counter = 5
+
+  //   let interval = setInterval(() => {
+  //     randomizeField(size)
+  //     counter--
+  //     if (!counter) { clearInterval(interval) }
+  //   }, 10);
+
+
+  // }
 
 
 
@@ -386,42 +540,36 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
 
   return (
     <>
-      <h2>{name}</h2>
-
       <ul id='shipsList' ref={shipListRef}>
         {!!minimumOfShips && minimumOfShips.map((el, ind) => {
           if (el) {
             return (
               <li key={ind}
-                id='listOfShips'
+                id='shipsList__li'
                 style={{
                   color: el === quantityShips[ind]
                     ? `rgb(0,160,60)`
                     : `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
                 }}
-              >{el} :{"■".repeat(ind + 1)}: {quantityShips[ind]}</li>
+              >{el} :{"■".repeat(ind + 1)}: {quantityShips[ind]} {(el === quantityShips[ind]) && "✓"}</li>
             )
           } else { return null }
+
         })}
+
+
       </ul>
 
-      <div className="grid">
-
-        <button
-          id="randomDraw"
-          onClick={() => { createRandomField(fieldSize) }}
-        >RANDOM</button>
-
-        <p></p>
+      <ul id='buttonsList'>
         {(quantityShips[0] === minimumOfShips[0]) &&
           (quantityShips[1] === minimumOfShips[1]) &&
           (quantityShips[2] === minimumOfShips[2]) &&
           (quantityShips[3] === minimumOfShips[3]) &&
-
+          (quantityShips[4] === minimumOfShips[4]) &&
           <>
             {numberOfSelectedPlayer === names.length &&
               <Link
-                id="next"
+                id="start"
                 to="/battle"
                 onClick={createField}
               >START GAME</Link>}
@@ -432,26 +580,23 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
                 onClick={() => { createField(); nextPlayer() }}
               >NEXT</button>}
           </>
-
-
-
         }
+        <li
+          id="randomize"
+          onClick={() => { randomizeField(size) }}
+        >RANDOMIZE</li>
+      </ul>
+
+      <div className="grid">
         <canvas
           ref={canvasRef}
           id="canvas"
-          width='1000'
-          height='1000'
-
+          width='3000'
+          height='3000'
           onMouseDown={e => {
             drawBoxes(e)
           }}
         ></canvas >
-        <button onClick={() => {
-          setInterval(() => {
-            createRandomField(size)
-          }, 5);
-        }
-        }>TEST</button>
       </div>
     </>
   )

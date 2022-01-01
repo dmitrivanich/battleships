@@ -16,11 +16,12 @@ export default function CreationField() {
 
   return <div className='creationFields'>
 
-    <h1>СОЗДАНИЕ ПОЛЕЙ</h1>
+
 
     {playersNames.map((name, index) => {
       if (selectedPlayer === index) {
         return (<div className="grid" key={index}>
+          <h1>СОЗДАНИЕ ПОЛЯ ДЛЯ: <span style={{ color: "rgb(230, 153, 38)" }}>{name}</span></h1>
           <Field
             names={playersNames}
             fields={playersFields}
@@ -32,8 +33,6 @@ export default function CreationField() {
         </div>)
       } else return (null)
     })}
-
-    <button onClick={() => { }}>TEST</button>
   </div >
 }
 

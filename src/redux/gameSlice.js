@@ -3,11 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const gameSlice = createSlice({
   name: 'games',
   initialState: {
-    fieldSize: 40,
-    playersNames: ["GEORGY BOTTO"],
-    playersFields: [[...new Array(40).fill(new Array(40).fill(0))]]
+    fieldSize: 10,
+    shipsRate: [4, 3, 2, 1, 0.4],
+    playersNames: [],
+    playersFields: []
   },
   reducers: {
+    changeShipsRate(state, action) {
+      state.shipsRate = action.payload
+    },
     changeSizeOfField(state, action) {
       state.fieldSize = +action.payload
     },
@@ -26,8 +30,20 @@ const gameSlice = createSlice({
       state.playersFields.splice(index, 1, newField)
     },
 
+    clearPlayers(state) {
+      state.playersNames = []
+      state.playersFields = []
+    }
+
   }
 })
 
-export const { addPlayer, removePlayer, changeSizeOfField, addField } = gameSlice.actions;
+export const {
+  addPlayer,
+  removePlayer,
+  changeSizeOfField,
+  changeShipsRate,
+  addField,
+  clearPlayers } = gameSlice.actions;
+
 export default gameSlice.reducer;

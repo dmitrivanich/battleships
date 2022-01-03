@@ -1,5 +1,7 @@
+let allNames = ["name1", "name2", "name3"]
+let attaked = all.slice()
+let attakerInd = 1
 
+attaked.splice(attakerInd, 1)
 
-var a = [1, 2, 3, 4, 5, 6]
-a.splice(0, 3, 9)
-console.log(a)
+console.log(attaked)

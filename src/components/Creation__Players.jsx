@@ -5,7 +5,7 @@ import { addPlayer, removePlayer, clearPlayers } from '../redux/gameSlice'
 import { CreateIcon, TrashIcon } from "../icons"
 
 
-export default function CreationPlayers() {
+export default function Creation__Players() {
   const playersNames = useSelector(state => state.games.playersNames)
   const [playerName, setPlayerName] = useState('')
   const fieldSize = useSelector(state => state.games.fieldSize)

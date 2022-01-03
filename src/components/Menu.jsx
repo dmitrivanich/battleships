@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Routes, Route, Link } from 'react-router-dom';
-import CreationPlayers from './CreationPlayers';
-import CreationField from "./CreationField.jsx";
+import Creation__Players from './Creation__Players';
+import Creation__Fields from "./Creation__Fields";
 import Battle from "./Battle.jsx";
 import { NextIcon } from "../icons";
 
@@ -28,7 +28,7 @@ function Menu() {
   }, [fieldSize, rules])
 
   const changeSize = (size) => {
-    dispatch((changeSizeOfField(size)))
+    dispatch(changeSizeOfField(size))
   }
   const changeRate = (ind, value) => {
     let newRate = shipsRate.slice()
@@ -54,7 +54,7 @@ function Menu() {
                   id='fieldSize'
                   type="range"
                   min='10'
-                  max='300'
+                  max='200'
                   step="2"
                   value={fieldSize} />
 
@@ -112,7 +112,7 @@ function Menu() {
                             name=""
                             id="shipsRate"
                             min='0'
-                            max='500'
+                            max='200'
                             value={el}
                             onChange={(e) => changeRate(ind, e.target.value)}
                             style={{
@@ -135,8 +135,8 @@ function Menu() {
           </>
         } />
 
-        <Route path="/players" element={<CreationPlayers />} />
-        <Route path="/fields" element={<CreationField />} />
+        <Route path="/players" element={<Creation__Players />} />
+        <Route path="/fields" element={<Creation__Fields />} />
         <Route path="/battle" element={<Battle />} />
       </Routes>
     </div>

@@ -5,10 +5,39 @@ const gameSlice = createSlice({
   initialState: {
     fieldSize: 10,
     shipsRate: [4, 3, 2, 1, 0.4],
-    playersNames: [],
-    playersFields: []
+    playersNames: ['Georgio', 'Antonio'],
+    playersFields: [
+      [
+        [0, 1, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 2, 2, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 2, 2, 0, 0, 4, 4, 4, 4, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [3, 3, 3, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 2, 2],
+        [0, 0, 3, 3, 3, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+      [
+        [0, 2, 0, 5, 0, 0, 0, 3, 0, 0],
+        [0, 2, 0, 5, 0, 0, 0, 3, 0, 0],
+        [0, 0, 0, 5, 0, 0, 0, 3, 0, 0],
+        [1, 0, 0, 5, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 5, 0, 0, 0, 0, 0, 0],
+        [3, 0, 0, 0, 0, 0, 0, 0, 0, 5],
+        [3, 0, 0, 0, 0, 0, 4, 0, 0, 5],
+        [3, 0, 0, 0, 0, 0, 4, 0, 0, 5],
+        [0, 0, 2, 2, 0, 0, 4, 0, 0, 5],
+        [0, 0, 0, 0, 0, 0, 4, 0, 0, 5]
+      ],
+    ]
   },
   reducers: {
+    updateField(state, action) {
+      let index = action.payload.index
+      let field = action.payload.field
+      state.playersFields.splice(index, 1, field)
+    },
     changeShipsRate(state, action) {
       state.shipsRate = action.payload
     },
@@ -44,6 +73,7 @@ export const {
   changeSizeOfField,
   changeShipsRate,
   addField,
-  clearPlayers } = gameSlice.actions;
+  clearPlayers,
+  updateField } = gameSlice.actions;
 
 export default gameSlice.reducer;

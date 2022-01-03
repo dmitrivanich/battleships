@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { addField } from "../redux/gameSlice"
 import { Link } from "react-router-dom"
 
-function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPlayer }) {
-  const field = fields[index] //удаление заморозки от redux
-  const size = fieldSize
+function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
+  const playersFields = useSelector(state => state.games.playersFields)
+  const field = playersFields[index]
+  const size = useSelector(state => state.games.fieldSize)
   const shipsRate = useSelector(state => state.games.shipsRate)
+  const names = useSelector(state => state.games.playersNames)
 
   const [quantityShips, setQuantityShips] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 })
   const [minimumOfShips, setMinimumOfShips] = useState(shipsRate)
@@ -90,8 +92,6 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
         }
       }
 
-      fillField()
-      fillField()
       fillField()
     }
     drawGrid()
@@ -266,12 +266,6 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
   function createField() {
     dispatch(addField({ index: index, field: arrayBoxes }))
   }
-
-
-
-
-
-
 
   function randomizeField(size) {
     const shipsFor_10_size = [4, 3, 2, 1, 0.4]
@@ -463,20 +457,14 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
             randomRow.splice(X, 1, 2)
             randomRow.splice(X + 1, 1, 2)
             newField.splice(Y, 1, randomRow)
-            // console.log('Соседей нет!')
           } else {
-            // console.log('У второй клетки соседи!')
             i--
           }
-
-
         } else {
-          // console.log('Вниз и право поместить никак нельзя!')
           i--
         }
 
       } else {
-        // console.log(X, Y, 'клетка занята')
         i--
       }
     }
@@ -500,41 +488,20 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
           (newField[Y + 1] && newField[Y + 1][X]) ||
           (newField[Y + 1] && newField[Y + 1][X + 1])
         ) {
-          // console.log(X, Y, 'Соседи есть')
           i--
         } else {
-          // console.log('Соседей нет', X, Y)
           randomRow.splice(X, 1, 1)
           newField.splice(Y, 1, randomRow)
-          // setArrayBoxes(newField)
-
         }
       } else {
-        // console.log(X, Y, 'клетка занята')
         i--
       }
     }
 
 
     setArrayBoxes(doRules(newField).field)
+    console.log(doRules(newField).field)
   }
-
-  // function beautyEffectForRandomizeField(size) {
-  //   let counter = 5
-
-  //   let interval = setInterval(() => {
-  //     randomizeField(size)
-  //     counter--
-  //     if (!counter) { clearInterval(interval) }
-  //   }, 10);
-
-
-  // }
-
-
-
-
-
 
 
 
@@ -552,6 +519,7 @@ function Field({ names, fieldSize, fields, index, nextPlayer, numberOfSelectedPl
                     : `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
                 }}
               >{el} :{"■".repeat(ind + 1)}: {quantityShips[ind]} {(el === quantityShips[ind]) && "✓"}</li>
+
             )
           } else { return null }
 

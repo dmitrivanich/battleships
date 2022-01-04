@@ -17,8 +17,10 @@ export default function Creation__Players() {
   }, [fieldSize])
 
   const createPlayer = () => {
-    dispatch(addPlayer(playerName))
-    setPlayerName('')
+    if (playerName.length > 1) {
+      dispatch(addPlayer(playerName))
+      setPlayerName('')
+    }
   }
 
   const deletePlayer = (index) => {
@@ -29,30 +31,36 @@ export default function Creation__Players() {
 
   return (
     <div className='creationPlayers'>
-      <h1>Список игроков:</h1>
+      <h1>СОЗДАНИЕ ИГРОКОВ</h1>
 
       <ul className='playersList'>
         {playersNames.map((name, ind) => (
-          <div key={ind}>
-            {name} <button onClick={() => deletePlayer(ind)}>
-              <TrashIcon />
-            </button>
+          <div key={ind} className='playersList__li' onClick={() => deletePlayer(ind)}>
+            {name}
           </div>
 
-        ))}
-      </ul>
-      <div className="options">
+        ))
+        }
+      </ul >
+      <div className="createPlayers">
 
         <input type="text"
+          className='textInput'
           value={playerName}
+          placeholder='Введите имя игрока...'
           onChange={e => setPlayerName(e.target.value)}
         />
 
-        <button className="createPlayer" onClick={createPlayer}>Create <CreateIcon /></button>
+
+        <button className="createPlayerBtn" onClick={createPlayer}>CREATE <CreateIcon /></button>
+        {(playersNames.length > 1) &&
+          <Link to="/fields" className='toCreate fields'>CREATE FIELDS</Link>
+        }
       </div>
 
-      <Link to="/fields" className='toCreate fields'>Создать поля</Link>
 
-    </div>
+
+
+    </div >
   )
 }

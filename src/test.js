@@ -1,7 +1,3 @@
-let allNames = ["name1", "name2", "name3"]
-let attaked = all.slice()
-let attakerInd = 1
+let a = [0, 0, 0, 0]
 
-attaked.splice(attakerInd, 1)
-
-console.log(attaked)
+console.log(a.every((el) => { return el === 0 }))

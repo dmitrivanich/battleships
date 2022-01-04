@@ -41,6 +41,107 @@ li {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
   }
 }
+.restart {
+  color: rgb(231, 187, 40);
+  margin-top: 10px;
+  font-size: 1.5em;
+}
+
+.menu {
+  h1 {
+    font-size: 30px;
+  }
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 93vh;
+  width: 93vw;
+  margin: 1vh auto;
+  padding-bottom: 20px;
+  text-align: center;
+  border: 0.5vh solid rgb(240, 237, 215);
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+}
+.options {
+  margin: 10px 0 10px 0;
+  display: flex;
+  align-items: center;
+  display: block;
+  user-select: none;
+  p {
+    font-weight: bold;
+    font-size: 18px;
+  }
+  .fieldSizeValue {
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 10px;
+    color: rgb(230, 153, 38);
+  }
+  .ships {
+    margin-top: 20px;
+    h6 {
+      font-size: 17px;
+      font-weight: bold;
+      color: rgb(177, 82, 82);
+      margin: 10px 0;
+    }
+
+    .choices {
+      display: block;
+      li {
+        margin-top: 10px;
+        label {
+          color: rgb(160, 160, 160);
+          font-size: 16px;
+          font-weight: bolder;
+          cursor: pointer;
+        }
+      }
+    }
+    .shipsValues {
+      margin: 15px 0 0 0;
+    }
+    #valueShip {
+      font-size: 1em;
+      background-color: #fff;
+    }
+  }
+  #fieldSize,
+  #shipsRate {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: #17689e;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: 0.2s;
+    transition: opacity 0.2s;
+    border-radius: 5px;
+    cursor: pointer;
+    &:hover {
+      opacity: 1;
+    }
+    &::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 20px;
+      background: rgb(255, 255, 255);
+      border: 2px solid rgb(27, 69, 158);
+      cursor: pointer;
+    }
+    &::-moz-range-thumb {
+      cursor: pointer;
+    }
+  }
+  select {
+    margin-left: 10px;
+  }
+}
 
 .battle {
   .field {
@@ -60,7 +161,7 @@ li {
         position: absolute;
         font-size: 5em;
         font-weight: bold;
-        color: rgb(0, 0, 0);
+        color: rgb(184, 184, 184);
       }
     }
   }
@@ -80,105 +181,100 @@ li {
   }
 }
 
-.menu {
+.creationPlayers {
+  max-width: 280px;
   h1 {
-    font-size: 30px;
+    color: rgb(97, 95, 95);
+    margin-bottom: 10px;
   }
-
-  .options {
-    margin: 10px 0 10px 0;
+  .playersList {
+    border: none;
     display: flex;
+    margin: 0 0 0 0;
+    justify-content: center;
     align-items: center;
-    display: block;
     user-select: none;
-    p {
+    flex-wrap: wrap;
+    &__li {
+      filter: opacity(0.7);
+      justify-content: center;
+      text-align: center;
+      padding: 4px 12px;
+      margin: 10px 5px 5px 5px;
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.12);
+      user-select: none;
+      transition: all 0.3s ease;
       font-weight: bold;
-      font-size: 18px;
-    }
-    .fieldSizeValue {
-      font-size: 18px;
-      font-weight: bold;
-      margin: 0 10px;
-      color: rgb(230, 153, 38);
-    }
-    .ships {
-      margin-top: 20px;
-      h6 {
-        font-size: 17px;
-        font-weight: bold;
-        color: rgb(177, 82, 82);
-        margin: 10px 0;
-      }
-
-      .choices {
-        display: block;
-        li {
-          margin-top: 10px;
-          label {
-            color: rgb(160, 160, 160);
-            font-size: 16px;
-            font-weight: bolder;
-            cursor: pointer;
-          }
-        }
-      }
-      .shipsValues {
-        margin: 15px 0 0 0;
-      }
-      #valueShip {
-        font-size: 12px;
-        background-color: #fff;
-      }
-    }
-    #fieldSize,
-    #shipsRate {
-      -webkit-appearance: none;
-      appearance: none;
-      height: 8px;
-      background: #17689e;
-      outline: none;
-      opacity: 0.7;
-      -webkit-transition: 0.2s;
-      transition: opacity 0.2s;
-      border-radius: 5px;
+      color: rgb(39, 39, 39);
       cursor: pointer;
       &:hover {
-        opacity: 1;
+        color: rgb(255, 255, 255);
+        background: rgb(0, 0, 0);
       }
-      &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 6px;
-        height: 6px;
-        border-radius: 20px;
-        background: rgb(255, 255, 255);
-        cursor: pointer;
-      }
-      &::-moz-range-thumb {
-        cursor: pointer;
-      }
-    }
-    select {
-      margin-left: 10px;
     }
   }
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 94vh;
-  width: 93vw;
-  margin: 1vh auto;
-  padding-bottom: 20px;
-  text-align: center;
-  border: 0.5vh solid rgb(240, 237, 215);
-  border-radius: 10px;
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
-}
+  .createPlayers {
+    display: flex;
+    flex-direction: column;
 
-.creationPlayers {
-  h1 {
-    color: rgb(175, 175, 175);
+    .textInput {
+      margin: 10px 0;
+      padding: 7px 0 7px 0;
+      font-size: 1em;
+      font-weight: bold;
+      text-align: center;
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+      &::placeholder {
+        color: #a3a3a3;
+      }
+      &:hover {
+        filter: opacity(0.7);
+      }
+    }
+    .createPlayerBtn {
+      background: rgb(255, 255, 255);
+      padding: 5px 0;
+      text-align: center;
+      border-radius: 20px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+      &:hover {
+        filter: opacity(0.3);
+      }
+      &:active {
+        filter: opacity(0.7);
+      }
+    }
+    .toCreate {
+      &.fields {
+        filter: opacity(0.7);
+        justify-content: center;
+        text-align: center;
+        padding: 7px 0;
+        margin: 10px 0 5px 0;
+        border-radius: 20px;
+        background: #fff;
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
+        user-select: none;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        color: rgb(201, 181, 5);
+        &:hover {
+          filter: opacity(0.3);
+        }
+        &:active {
+          filter: opacity(0.7);
+        }
+      }
+    }
   }
 }
 
@@ -186,7 +282,7 @@ li {
 #buttonsList {
   display: flex;
   margin: 0 0 1vh 0;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   user-select: none;
   flex-wrap: wrap;
@@ -196,7 +292,8 @@ li {
   #next,
   #start {
     filter: opacity(0.7);
-    text-align: right;
+    justify-content: center;
+    text-align: center;
     padding: 3px 10px;
     margin: 10px 5px 5px 5px;
     border-radius: 20px;
@@ -213,7 +310,7 @@ li {
   }
 
   #buttonsList {
-    justify-content: flex-end;
+    justify-content: center;
     margin: 0 0 1vh 15px;
     #randomize,
     #next,

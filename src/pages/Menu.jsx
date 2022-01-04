@@ -18,9 +18,11 @@ function Menu() {
   const fieldSize = useSelector(state => state.games.fieldSize)
   const shipsRate = useSelector(state => state.games.shipsRate)
 
+  const shipsRule = [4, 3, 2, 1, 0.4].map(value => Math.round(value * (fieldSize / 10)))
+
   useEffect(() => {
     if (rules === 'standard') {
-      dispatch(changeShipsRate([4, 3, 2, 1, 0.4].map(value => Math.round(value * (fieldSize / 10)))))
+      dispatch(changeShipsRate(shipsRule))
       if (standartRef.current !== null) { standartRef.current.checked = true }
     } else {
       if (anotherRef.current !== null) { anotherRef.current.checked = true }
@@ -29,6 +31,7 @@ function Menu() {
 
   const changeSize = (size) => {
     dispatch(changeSizeOfField(size))
+    setRules('standard')
   }
   const changeRate = (ind, value) => {
     let newRate = shipsRate.slice()
@@ -54,7 +57,7 @@ function Menu() {
                   id='fieldSize'
                   type="range"
                   min='10'
-                  max='200'
+                  max='30'
                   step="2"
                   value={fieldSize} />
 
@@ -62,9 +65,6 @@ function Menu() {
 
               <div className="ships">
                 <p>КОЛИЧЕСТВО КОРАБЛЕЙ:</p>
-
-
-
 
                 <ul className="choices">
                   <li>
@@ -74,7 +74,7 @@ function Menu() {
                       name="mod"
                       value="standard"
                       ref={standartRef}
-                      onClick={(e) => { setRules(e.target.value); e.target.checked = false }}
+                      onClick={(e) => { setRules(e.target.value); e.target.checked = true }}
 
                     />
                     <label htmlFor="choice1"> СТАНДАРТНОЕ</label>
@@ -112,7 +112,7 @@ function Menu() {
                             name=""
                             id="shipsRate"
                             min='0'
-                            max='200'
+                            max={shipsRule[ind]}
                             value={el}
                             onChange={(e) => changeRate(ind, e.target.value)}
                             style={{

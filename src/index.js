@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Menu from './components/Menu.jsx';
+import Menu from './pages/Menu.jsx';
 
 import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux';

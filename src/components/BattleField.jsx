@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateField } from '../redux/gameSlice'
 
-export default function BattleField({ index, miss }) {
+export default function BattleField({ index, miss, shipsOut }) {
   const playersFields = useSelector(state => state.games.playersFields)
   const field = playersFields[index]
   const size = useSelector(state => state.games.fieldSize)
@@ -15,14 +15,14 @@ export default function BattleField({ index, miss }) {
 
   const dispatch = useDispatch()
 
-  const changeStatus = () => {
+  const whenMiss = () => {
     setStatus(false)
     setTimeout(() => setStatus(true), 500)
   }
 
   useEffect(() => {
     setArrayBoxes(doRules(field).field)
-    canvasRef.current.style.width = `${size * 50}px`
+    canvasRef.current.style.width = `70vh`
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -40,46 +40,48 @@ export default function BattleField({ index, miss }) {
         if (arrayBoxes.length > 0) {
           for (let i = 0; i < arrayBoxes.length; i++) {
             arrayBoxes[i].forEach((el, ind) => {
-              let space = 500 / size
+              let space = 400 / size
               let x = Math.round((box.width) * (ind))
               let y = Math.round(box.height * i)
               // В массиве ArrayBoxes содержатся элементы 0(пустая клетка) и 1(корабль)
               // space - отступ между клетками 
-
               ctx.lineWidth = 300 / size
               ctx.lineCap = 'round'
 
-              function drawBox() {//рисует клетку
-                ctx.fillStyle = "#8da6bb"
+              function drawDefault() {
+                ctx.strokeStyle = "white";
+                ctx.fillStyle = `#b8c9d6`
                 ctx.fillRect(x, y, box.width, box.height)
                 ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
-                ctx.fillStyle = "#b8c9d6";
-                // ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
+                ctx.fillStyle = "#a3b7c5";
+                ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
               }
 
               switch (el) {
                 case 9: //мимо
+                  drawDefault();
                   ctx.fillStyle = "#ffffff";
                   ctx.beginPath();
                   ctx.arc(x + box.width / 2, y + box.height / 2, 300 / size, 0, Math.PI * 2)
                   ctx.fill();
                   break;
                 case 8: //убил   
+                  drawDefault();
                   ctx.strokeStyle = "black";
                   ctx.fillStyle = "black";
-                  drawBox();
                   ctx.beginPath();
-                  ctx.moveTo(x + space / 2, y + space / 2);
-                  ctx.lineTo(x + box.width - space / 2, y + box.height - space / 2);
+                  ctx.moveTo(x + space, y + space);
+                  ctx.lineTo(x + box.width - space, y + box.height - space);
                   ctx.stroke();
                   ctx.beginPath();
-                  ctx.moveTo(x + box.width - space / 2, y + space / 2);
-                  ctx.lineTo(x + space / 2, y + box.height - space / 2);
+                  ctx.moveTo(x + box.width - space, y + space);
+                  ctx.lineTo(x + space, y + box.height - space);
                   ctx.stroke();
+                  ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
                   break;
                 case 7: //ранил
+                  drawDefault();
                   ctx.strokeStyle = "#970000";
-                  ctx.lineWidth = 300 / size;
                   ctx.beginPath();
                   ctx.moveTo(x + space, y + space);
                   ctx.lineTo(x + box.width - space, y + box.height - space);
@@ -91,13 +93,7 @@ export default function BattleField({ index, miss }) {
                   break;
 
                 default:
-                  ctx.strokeStyle = "white";
-                  ctx.lineWidth = 400 / size
-                  ctx.fillStyle = `#b8c9d6`
-                  ctx.fillRect(x, y, box.width, box.height)
-                  ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
-                  ctx.fillStyle = "#a3b7c5";
-                  ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
+                  drawDefault();
                   break;
               }
             })
@@ -147,7 +143,6 @@ export default function BattleField({ index, miss }) {
     //Теперь, по клику на Canvas, я получаю индкесы для двумерного
     //массива arrayBoxes
 
-
     function shoot(i, k) {
       //Для массива arrayBoxes, где :
       //k - индекс строки с которой взаимодействует пользователь(y)
@@ -181,8 +176,11 @@ export default function BattleField({ index, miss }) {
           break;
         default:
           newRow.splice(i, 1, 9) //мимо
-          miss()
-          changeStatus()
+          if (!el) {
+            miss()
+            whenMiss()
+          }
+
           break;
       }
 
@@ -191,10 +189,16 @@ export default function BattleField({ index, miss }) {
       editedArray.splice(k, 1, newRow)//обновляет изменённую строку
 
       const doRulesField = doRules(editedArray).field
+      const doRulesShips = doRules(editedArray).newQuantityShips
 
-      setArrayBoxes(doRulesField)
 
-      dispatch(updateField({ index: index, field: doRulesField }))
+      if (doRulesShips.every((el) => { return el === 0 })) {
+        shipsOut(index) //если корабли закончились
+      }
+
+
+      setArrayBoxes(doRulesField)//обновить поле локально
+      dispatch(updateField({ index: index, field: doRulesField }))//глобально
     }
     shoot(indexBoxX, indexBoxY)
   }
@@ -346,8 +350,8 @@ export default function BattleField({ index, miss }) {
       ships[4].length / 5
     ]
 
+    newQuantityShips.map((el) => Math.round(el * 100) / 100)
     setQuantityShips(newQuantityShips)
-
     return { field: field, newQuantityShips: newQuantityShips }
   }
 
@@ -355,7 +359,7 @@ export default function BattleField({ index, miss }) {
     <div className="grid">
       <ul id='shipsList' >
         {quantityShips && quantityShips.map((el, ind) => (
-          <li key={ind}
+          !!el && <li key={ind}
             id='shipsList__li'
             style={{
               color: `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`

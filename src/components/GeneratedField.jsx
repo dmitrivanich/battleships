@@ -23,7 +23,7 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
   useEffect(() => {
     setMinimumOfShips([...shipsRate].map(value => Math.round(value)))
     setArrayBoxes(doRules(field).field)
-    canvasRef.current.style.width = `${size * 50}px`
+    canvasRef.current.style.width = `70vh`
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -268,12 +268,9 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
   }
 
   function randomizeField(size) {
-    const shipsFor_10_size = [4, 3, 2, 1, 0.4]
-    //Массив с числом кораблей всех типов, для размера поля "10"
     const newField = new Array(size).fill(new Array(size).fill(0)) //новое поле
 
-    const shipsCounter = shipsFor_10_size.map(value => Math.round(value * (size / 10)))
-    //Массив с колличествами незаполненных кораблей для всех типов, в зависимости от размера поля
+    const shipsCounter = shipsRate.slice()
 
     for (let i = 0; i < shipsCounter[4]; i++) {//для пятиклеточных
 
@@ -500,7 +497,6 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
 
 
     setArrayBoxes(doRules(newField).field)
-    console.log(doRules(newField).field)
   }
 
 

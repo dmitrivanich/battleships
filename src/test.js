@@ -1,3 +1,7 @@
-let a = [0, 0, 0, 0]
 
-console.log(a.every((el) => { return el === 0 }))
+
+for (i = 0; i < 100; i++) {
+  let a = Math.round(Math.random() * 9)
+  console.log(a)
+}
+

@@ -5,6 +5,7 @@ import Field from "../components/GeneratedField"
 
 export default function CreationField() {
   const playersNames = useSelector(state => state.games.playersNames)
+  const playersColors = useSelector(state => state.games.playersColors)
   const [selectedPlayer, setSelectedPlayer] = useState(0)
 
   const nextPlayer = () => {
@@ -15,7 +16,7 @@ export default function CreationField() {
     {playersNames.map((name, index) => {
       if (selectedPlayer === index) {
         return (<div key={index}>
-          <h1>СОЗДАНИЕ ПОЛЯ ДЛЯ: <span style={{ color: "rgb(230, 153, 38)" }}>{name}</span></h1>
+          <h1>СОЗДАНИЕ ПОЛЯ ДЛЯ: <span style={{ color: playersColors[index] }}>{name}</span></h1>
           <Field
             index={index}
             numberOfSelectedPlayer={selectedPlayer + 1}

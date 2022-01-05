@@ -49,7 +49,7 @@ li {
 
 .menu {
   h1 {
-    font-size: 30px;
+    font-size: 3em;
   }
   display: flex;
   flex-direction: column;
@@ -144,6 +144,16 @@ li {
 }
 
 .battle {
+  h1 {
+    font-size: 4vh;
+  }
+  h2 {
+    font-size: 2vh;
+    margin: 10px 0 0 0;
+  }
+  .grid {
+    margin: 0;
+  }
   .field {
     position: relative;
     .message {
@@ -151,41 +161,61 @@ li {
       display: flex;
       justify-content: center;
       align-items: center;
-      background: rgb(231, 231, 231);
       width: 100%;
       height: 100%;
       filter: opacity(0.7);
       user-select: none;
       cursor: pointer;
+      &.miss {
+        background: rgb(56, 76, 112);
+      }
+
+      &.destroyed {
+        background-color: rgb(41, 41, 41);
+      }
+      &.computer {
+        background-color: rgb(9, 75, 69);
+      }
       &__text {
         position: absolute;
-        font-size: 5em;
+        font-size: 3vh;
         font-weight: bold;
-        color: rgb(184, 184, 184);
+        color: rgb(235, 235, 235);
       }
     }
   }
 }
 
 .toCreate {
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin-top: 10px;
   padding: 6px 20px;
   background-color: rgb(235, 235, 235);
   border-radius: 20px;
   font-weight: bold;
   color: rgb(148, 148, 148);
+  transition: all 0.2s ease;
   svg {
     width: 10px;
     height: 10px;
   }
+
+  &:hover {
+    filter: opacity(0.3);
+  }
+  &:active {
+    filter: opacity(0.7);
+  }
+  // &.bot {
+  //   margin-top: 0;
+  // }
 }
 
 .creationPlayers {
-  max-width: 280px;
+  max-width: 500px;
   h1 {
     color: rgb(97, 95, 95);
     margin-bottom: 10px;
+    font-size: 2em;
   }
   .playersList {
     border: none;
@@ -349,74 +379,3 @@ li {
     }
   }
 }
-// @media screen and (max-width: 1600px) {
-//   .creationFields {
-//     .grid {
-//       #canvas {
-//         width: 50vw;
-//         height: 50vw;
-//       }
-//     }
-//     #shipsList {
-//       margin: 10px auto 15px auto;
-//       &__li {
-//         font-size: 15px;
-//       }
-//       width: 50vw;
-//     }
-//   }
-// }
-
-// @media screen and (max-width: 1300px) {
-//   .creationFields {
-//     .grid {
-//       #canvas {
-//         width: 60vw;
-//         height: 60vw;
-//       }
-//     }
-//     #shipsList {
-//       margin: 10px auto 15px auto;
-//       &__li {
-//         font-size: 15px;
-//       }
-//       width: 60vw;
-//     }
-//   }
-// }
-
-// @media screen and (max-width: 1050px) {
-//   .creationFields {
-//     .grid {
-//       #canvas {
-//         width: 70vw;
-//         height: 70vw;
-//       }
-//     }
-//     #shipsList {
-//       margin: 10px auto 15px auto;
-//       &__li {
-//         font-size: 13px;
-//       }
-//       width: 70vw;
-//     }
-//   }
-// }
-
-// @media screen and (max-width: 800px) {
-//   .creationFields {
-//     .grid {
-//       #canvas {
-//         width: 90vw;
-//         height: 90vw;
-//       }
-//     }
-//     #shipsList {
-//       margin: 10px auto 20px auto;
-//       &__li {
-//         font-size: 13px;
-//       }
-//       width: 90vw;
-//     }
-//   }
-// }

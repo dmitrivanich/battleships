@@ -1,28 +1,118 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateField } from '../redux/gameSlice'
+import { updateField, changeTurn } from '../redux/gameSlice'
 
 export default function BattleField({ index, miss, shipsOut }) {
   const playersFields = useSelector(state => state.games.playersFields)
   const field = playersFields[index]
   const size = useSelector(state => state.games.fieldSize)
-
+  const vsBot = useSelector(state => state.games.vsBot)
+  const whoseTurn = useSelector(state => state.games.whoseTurn)
   const [arrayBoxes, setArrayBoxes] = useState(field);
   const [quantityShips, setQuantityShips] = useState(null);
-  const [status, setStatus] = useState(true)
+  const [status, setStatus] = useState(0) //0-ready, 1-miss, 2-destroyed, 3-botShooiting
+
 
   const canvasRef = useRef(null)
 
   const dispatch = useDispatch()
 
   const whenMiss = () => {
-    setStatus(false)
-    setTimeout(() => setStatus(true), 500)
+    if (!vsBot) {
+      setStatus(1)
+      setTimeout(() => setStatus(0), 500)
+    } else { //в режиме против бота
+      setStatus(3)
+      dispatch(changeTurn(1))//меняет очередь стрельбы
+      //здесь стреляет бот
+      //выполнится только 
+      if (index === 1) {
+        shoot()
+      }
+      // if (whoseTurn === 1) {//если очередь стрелять - бота
+      //   shoot(Math.round(Math.random() * (size - 1)), Math.round(Math.random() * (size - 1)))
+      //   dispatch(changeTurn(0))
+      // }
+      setStatus(0) //после выстрела дает возможность выстрелить
+    }
   }
+
+  const whenPlayerIsOut = () => {
+    setStatus(2)
+    setTimeout(() => {
+      shipsOut(index)//глобально удаляет игрока
+    }, 100)
+    setTimeout(() => {
+      setStatus(0)
+    }, 600)
+
+  }
+
+  function shoot() {
+    //k - индекс строки с которой взаимодействует пользователь(y)
+    //i - индекс элемента этой строки (x) 
+    const i = Math.round(Math.random() * (size - 1))
+    const k = Math.round(Math.random() * (size - 1))
+
+
+    const editedArray = JSON.parse(JSON.stringify(playersFields[0])) //для поля человека
+    const newRow = [...editedArray[k]]
+    const el = newRow[i]
+
+    switch (el) {
+      case 1:
+        newRow.splice(i, 1, 8) //убит
+        break;
+      case 2:
+        newRow.splice(i, 1, 7)//ранен
+        break;
+      case 3:
+        newRow.splice(i, 1, 7)//ранен
+        break;
+      case 4:
+        newRow.splice(i, 1, 7) //ранен
+        break;
+      case 5:
+        newRow.splice(i, 1, 7) //ранен
+        break;
+      case 7:
+        newRow.splice(i, 1, 7) //ранен
+        break;
+      case 8:
+        newRow.splice(i, 1, 8) //убит
+        break;
+      default:
+        newRow.splice(i, 1, 9) //мимо
+        if (!el) {
+          if (!vsBot) {
+            miss()
+            whenMiss()
+          } else {//когда режим против бота
+            whenMiss()
+          }
+        }
+        break;
+    }
+
+    editedArray.splice(k, 1, newRow)//обновляет изменённую строку
+
+    const doRulesField = doRules(editedArray).field
+    const doRulesShips = doRules(editedArray).newQuantityShips
+
+    if (doRulesShips.every((el) => { return el === 0 })) {
+      whenPlayerIsOut(index)
+      //если корабли закончились
+    }
+
+    // setArrayBoxes(doRulesField)//обновить поле локально
+    dispatch(updateField({ index: 0, field: doRulesField }))//глобально
+  }
+
 
   useEffect(() => {
     setArrayBoxes(doRules(field).field)
-    canvasRef.current.style.width = `70vh`
+    if (!vsBot) { canvasRef.current.style.width = `70vh` }
+    if (vsBot) { canvasRef.current.style.width = `35vh` }
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -105,7 +195,7 @@ export default function BattleField({ index, miss, shipsOut }) {
     }
     drawGrid()
     //рендерит сетку и корабли
-  }, [arrayBoxes])
+  }, [arrayBoxes, playersFields])
 
   function drawBox(e) { //действие по клику мыши
     const rect = e.target.getBoundingClientRect()
@@ -177,8 +267,12 @@ export default function BattleField({ index, miss, shipsOut }) {
         default:
           newRow.splice(i, 1, 9) //мимо
           if (!el) {
-            miss()
-            whenMiss()
+            if (!vsBot) {
+              miss()
+              whenMiss()
+            } else {//когда режим против бота
+              whenMiss()
+            }
           }
 
           break;
@@ -193,7 +287,8 @@ export default function BattleField({ index, miss, shipsOut }) {
 
 
       if (doRulesShips.every((el) => { return el === 0 })) {
-        shipsOut(index) //если корабли закончились
+        whenPlayerIsOut(index)
+        //если корабли закончились
       }
 
 
@@ -370,8 +465,20 @@ export default function BattleField({ index, miss, shipsOut }) {
 
 
       <div className="field">
-        {!status && <div className="message">
+        {status === 1 && <div className="message miss">
           <div className="message__text">ПРОМАХ</div>
+        </div>
+        }
+        {status === 2 && <div className="message destroyed">
+          <div className="message__text">УНИЧТОЖЕН</div>
+        </div>
+        }
+        {((whoseTurn !== index) && status === 3) && <div className="message computer">
+          <div className="message__text">СТРЕЛЯЕТ КОМПЬЮТЕР</div>
+        </div>
+        }
+        {((whoseTurn === index) && status === 3) && <div className="message computer">
+          <div className="message__text">СТРЕЛЯЕТ ИГРОК</div>
         </div>
         }
         <canvas
@@ -380,18 +487,21 @@ export default function BattleField({ index, miss, shipsOut }) {
           width='3000'
           height='3000'
           onMouseDown={e => {
-            if (status) {
-              drawBox(e)
+            if (status === 0) {
+              if (!vsBot) {
+                drawBox(e)
+              } else {
+                if (index === 0) {//если клик по полю игрока
+                  alert('Это ваше поле!')
+                } else {
+                  drawBox(e)
+                }
+              }
             }
           }}
         ></canvas >
+
       </div>
-
-
-
-
-
-
     </div>
   )
 }

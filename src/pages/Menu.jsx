@@ -6,7 +6,7 @@ import Battle from "./Battle.jsx";
 import { NextIcon } from "../icons";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeSizeOfField, changeShipsRate } from '../redux/gameSlice'
+import { changeSizeOfField, changeShipsRate, addBot, addPlayer } from '../redux/gameSlice'
 
 function Menu() {
   const dispatch = useDispatch()
@@ -21,6 +21,7 @@ function Menu() {
   const shipsRule = [4, 3, 2, 1, 0.4].map(value => Math.round(value * (fieldSize / 10)))
 
   useEffect(() => {
+    dispatch(addBot(false))
     if (rules === 'standard') {
       dispatch(changeShipsRate(shipsRule))
       if (standartRef.current !== null) { standartRef.current.checked = true }
@@ -128,10 +129,30 @@ function Menu() {
               </div>
             </div>
 
-            <Link
-              to="/players"
-              className="toCreate players"
-            >СОЗДАТЬ ИГРОКОВ <NextIcon /></Link>
+            {//Для своего кол-ва кораблей убирает возможность выбрать 0 кораблей
+              ((rules === 'standard') ||
+                (rules === 'another' && shipsRate.some((el) => { return el > 0 }))
+              ) &&
+              <>
+                <h2>ПРОТИВНИК:</h2>
+                <Link
+                  to="/players"
+                  className="toCreate players"
+                >ЧЕЛОВЕК<NextIcon /></Link>
+
+                <Link
+                  to="/fields"
+                  className="toCreate bot"
+                  onClick={() => {
+                    dispatch(addBot(true))
+                    dispatch(addPlayer('HUMAN'))
+                  }}
+                >КОМПЬЮТЕР<NextIcon /></Link>
+              </>
+
+            }
+
+
           </>
         } />
 
@@ -139,7 +160,7 @@ function Menu() {
         <Route path="/fields" element={<Creation__Fields />} />
         <Route path="/battle" element={<Battle />} />
       </Routes>
-    </div>
+    </div >
   );
 }
 

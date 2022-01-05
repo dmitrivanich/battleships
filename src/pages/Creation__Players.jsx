@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { addPlayer, removePlayer, clearPlayers } from '../redux/gameSlice'
-import { CreateIcon, TrashIcon } from "../icons"
+import { CreateIcon } from "../icons"
 
 
 export default function Creation__Players() {
@@ -17,7 +17,7 @@ export default function Creation__Players() {
   }, [fieldSize])
 
   const createPlayer = () => {
-    if (playerName.length > 1) {
+    if (playerName.length > 0) {
       dispatch(addPlayer(playerName))
       setPlayerName('')
     }

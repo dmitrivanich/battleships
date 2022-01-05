@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { addField } from "../redux/gameSlice"
+import { addField, addPlayer } from "../redux/gameSlice"
 import { Link } from "react-router-dom"
 
 function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
@@ -9,6 +9,7 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
   const size = useSelector(state => state.games.fieldSize)
   const shipsRate = useSelector(state => state.games.shipsRate)
   const names = useSelector(state => state.games.playersNames)
+  const vsBot = useSelector(state => state.games.vsBot)
 
   const [quantityShips, setQuantityShips] = useState({ 0: 0, 1: 0, 2: 0, 3: 0, 4: 0 })
   const [minimumOfShips, setMinimumOfShips] = useState(shipsRate)
@@ -495,10 +496,11 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
       }
     }
 
+    const rendomizedField = doRules(newField).field
+    setArrayBoxes(rendomizedField)
 
-    setArrayBoxes(doRules(newField).field)
+    return rendomizedField
   }
-
 
 
   return (
@@ -531,14 +533,22 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
           (quantityShips[3] === minimumOfShips[3]) &&
           (quantityShips[4] === minimumOfShips[4]) &&
           <>
-            {numberOfSelectedPlayer === names.length &&
+            {(vsBot || (numberOfSelectedPlayer === names.length)) &&
               <Link
                 id="start"
                 to="/battle"
-                onClick={createField}
+                onClick={() => {
+                  if (vsBot) {
+                    dispatch(addField({ index: 0, field: arrayBoxes }))
+                    dispatch(addPlayer('COMPUTER'))
+                    dispatch(addField({ index: 1, field: randomizeField(size) }))
+                  } else {
+                    createField()
+                  }
+                }}
               >START GAME</Link>}
 
-            {numberOfSelectedPlayer !== names.length &&
+            {(!vsBot && (numberOfSelectedPlayer !== names.length)) &&
               <button
                 id="next"
                 onClick={() => { createField(); nextPlayer() }}

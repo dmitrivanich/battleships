@@ -1,1 +1,1 @@
-# Battleships in your browser!
+#Создать игру морской бой.

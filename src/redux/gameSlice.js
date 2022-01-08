@@ -7,14 +7,10 @@ const gameSlice = createSlice({
     shipsRate: [4, 3, 2, 1, 0.4],
     playersNames: [],
     vsBot: false,
-    whoseTurn: 0,
     playersColors: ['#96c824', '#FF7751', '#F33829', "#0EB9CB", "#809a41", "#6c6f74"],
     playersFields: []
   },
   reducers: {
-    changeTurn(state, action) {
-      state.whoseTurn = action.payload
-    },
     addBot(state, action) {
       state.vsBot = action.payload
     },
@@ -61,7 +57,6 @@ export const {
   addField,
   clearPlayers,
   addBot,
-  changeTurn,
   updateField } = gameSlice.actions;
 
 export default gameSlice.reducer;

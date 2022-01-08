@@ -11,12 +11,17 @@ $pad: 3vh; //отступ от краёв экрана
   font-size: 1em;
 }
 
+html {
+  background-color: rgb(24, 24, 24);
+}
+
 h1 {
-  color: rgb(82, 82, 82);
+  color: rgb(182, 181, 181);
   font-size: 1em;
 }
 h2 {
   font-size: 17px;
+  color: rgb(207, 207, 207);
 }
 
 li {
@@ -29,12 +34,13 @@ li {
   position: relative;
   margin-top: 10px;
   #canvas {
-    border: 2px solid rgb(199, 199, 199);
-    background-color: #b8c9d6;
-    max-width: 90vw;
-    max-height: 90vw;
+    background-color: #858585;
+    color: rgb(192, 0, 0);
+    // max-width: 90vw;
+    // max-height: 90vw;
+    width: 35vh;
+    height: 35vh;
     // filter: opacity(0.7);
-    scale: 0.1;
     color: rgb(199, 0, 0);
     cursor: pointer;
     user-select: none;
@@ -48,8 +54,22 @@ li {
 }
 
 .menu {
+  position: relative;
+  .toMenu {
+    color: rgb(114, 114, 114);
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    &:hover {
+      color: rgb(158, 158, 158);
+    }
+  }
   h1 {
     font-size: 3em;
+    color: rgb(228, 227, 227);
   }
   display: flex;
   flex-direction: column;
@@ -60,9 +80,10 @@ li {
   margin: 1vh auto;
   padding-bottom: 20px;
   text-align: center;
-  border: 0.5vh solid rgb(240, 237, 215);
+  border: 0.5vh solid rgb(88, 88, 88);
   border-radius: 10px;
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(56, 56, 56);
 }
 .options {
   margin: 10px 0 10px 0;
@@ -73,6 +94,7 @@ li {
   p {
     font-weight: bold;
     font-size: 18px;
+    color: rgb(221, 221, 221);
   }
   .fieldSizeValue {
     font-size: 18px;
@@ -106,7 +128,7 @@ li {
     }
     #valueShip {
       font-size: 1em;
-      background-color: #fff;
+      color: rgb(184, 184, 184);
     }
   }
   #fieldSize,
@@ -144,11 +166,13 @@ li {
 }
 
 .battle {
-  h1 {
-    font-size: 4vh;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+
+  align-items: center;
   h2 {
-    font-size: 2vh;
+    font-size: 1.5vh;
     margin: 10px 0 0 0;
   }
   .grid {
@@ -156,31 +180,43 @@ li {
   }
   .field {
     position: relative;
+    margin: 10px 10px;
+    background-color: rgb(46, 46, 46);
     .message {
       position: absolute;
       display: flex;
       justify-content: center;
       align-items: center;
-      width: 100%;
-      height: 100%;
-      filter: opacity(0.7);
+      width: 35vh;
+      height: 35vh;
       user-select: none;
       cursor: pointer;
       &.miss {
-        background: rgb(56, 76, 112);
+        filter: opacity(0.7);
+        background: rgb(94, 122, 173);
       }
-
       &.destroyed {
+        filter: opacity(0.7);
         background-color: rgb(41, 41, 41);
       }
       &.computer {
+        filter: opacity(0.7);
         background-color: rgb(9, 75, 69);
       }
+      &.win {
+        filter: opacity(0.7);
+        background-color: rgb(0, 0, 0);
+      }
+      &.loose {
+        filter: opacity(0.7);
+        background-color: rgb(0, 0, 0);
+      }
       &__text {
+        filter: opacity(2);
         position: absolute;
-        font-size: 3vh;
+        font-size: 4vh;
         font-weight: bold;
-        color: rgb(235, 235, 235);
+        color: rgb(255, 255, 255);
       }
     }
   }
@@ -192,7 +228,7 @@ li {
   background-color: rgb(235, 235, 235);
   border-radius: 20px;
   font-weight: bold;
-  color: rgb(148, 148, 148);
+  color: rgb(75, 75, 75);
   transition: all 0.2s ease;
   svg {
     width: 10px;
@@ -200,10 +236,10 @@ li {
   }
 
   &:hover {
-    filter: opacity(0.3);
+    filter: opacity(0.7);
   }
   &:active {
-    filter: opacity(0.7);
+    filter: opacity(0.5);
   }
   // &.bot {
   //   margin-top: 0;
@@ -213,7 +249,7 @@ li {
 .creationPlayers {
   max-width: 500px;
   h1 {
-    color: rgb(97, 95, 95);
+    color: rgb(207, 207, 207);
     margin-bottom: 10px;
     font-size: 2em;
   }
@@ -259,15 +295,18 @@ li {
       border: none;
       box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
       transition: all 0.2s ease;
+      background-color: rgb(66, 66, 66);
+      color: rgb(207, 206, 206);
       &::placeholder {
-        color: #a3a3a3;
+        color: #9c9c9c;
       }
       &:hover {
         filter: opacity(0.7);
       }
     }
     .createPlayerBtn {
-      background: rgb(255, 255, 255);
+      background-color: rgb(66, 66, 66);
+      color: rgb(175, 174, 174);
       padding: 5px 0;
       text-align: center;
       border-radius: 20px;
@@ -277,10 +316,10 @@ li {
       transition: all 0.2s ease;
       box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
       &:hover {
-        filter: opacity(0.3);
+        filter: opacity(0.7);
       }
       &:active {
-        filter: opacity(0.7);
+        filter: opacity(0.3);
       }
     }
     .toCreate {
@@ -291,7 +330,7 @@ li {
         padding: 7px 0;
         margin: 10px 0 5px 0;
         border-radius: 20px;
-        background: #fff;
+        background: rgb(68, 68, 68);
         box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.2);
         user-select: none;
         transition: all 0.3s ease;
@@ -311,31 +350,31 @@ li {
 #shipsList,
 #buttonsList {
   display: flex;
-  margin: 0 0 1vh 0;
   justify-content: center;
   align-items: center;
   user-select: none;
   flex-wrap: wrap;
+  font-size: 1.2vh;
 
   &__li,
   #randomize,
   #next,
   #start {
     filter: opacity(0.7);
+    font-size: 1.2vh;
     justify-content: center;
     text-align: center;
-    padding: 3px 10px;
-    margin: 10px 5px 5px 5px;
-    border-radius: 20px;
-    background: #fff;
+    padding: 3px 16px 6px 15px;
+    margin: 10px 5px 0px 5px;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.05);
     user-select: none;
+    color: rgb(148, 147, 147);
   }
 }
 
 .creationFields {
   h1 {
-    color: rgb(95, 95, 95);
+    color: rgb(182, 181, 181);
     font-size: 1.5em;
   }
 
@@ -358,16 +397,21 @@ li {
       }
     }
     #randomize {
-      color: rgb(107, 107, 107);
+      color: rgb(255, 233, 36);
     }
 
     #next {
-      color: rgb(141, 184, 25);
+      color: rgb(150, 199, 16);
     }
 
     #start {
-      color: rgb(47, 167, 17);
+      color: rgb(243, 243, 243);
     }
+  }
+
+  #canvas {
+    max-width: 35vh;
+    max-height: 35vh;
   }
 }
 

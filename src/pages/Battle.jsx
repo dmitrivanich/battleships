@@ -14,7 +14,7 @@ function Battle() {
   const attaсkedIndices = allIndices.filter((el, ind) => ind !== attakerIndex)
   const [attakedIndex, setAttakedIndex] = useState(0)
   const [battleStatus, setBattleStatus] = useState(true)
-  const [whoseTurn, setWhoseTurn] = useState(0) //0-human,1-bot
+  const [winner, setWinner] = useState(null)
 
   function shoot() {
     setTimeout(() => changePlayer(), 500)
@@ -34,15 +34,32 @@ function Battle() {
 
   function gameOver(index) {
     console.log('корабли закончились у игрока с индексом', index)
-    if (playersNames.length === 2) {
-      setTimeout(() => setBattleStatus(false), 500)
+    if (!vsBot) {
+      if (playersNames.length === 2) {
+        setTimeout(() => setBattleStatus(false), 500)
+      } else {
+        deleteDestroyed()
+      }
     } else {
-      deleteDestroyed()
+      if (index === 1) {
+        setWinner(0)
+        console.log('Победил - ЧЕЛОВЕК')
+      } else {
+        setWinner(1)
+        console.log('Победил - КОМПЬЮТЕР')
+      }
     }
   }
 
   return (<>
-    {!battleStatus &&
+    {!vsBot && !battleStatus &&
+      <div className="resultOfBattle">
+        <h1><span style={{ color: playersColors[attakerIndex] }}>{playersNames[attakerIndex]}</span> IS A WINNER!</h1>
+        <Link to='/' ><h3 className='restart'>BACK TO MENU</h3></Link>
+      </div>
+    }
+
+    {vsBot && !battleStatus &&
       <div className="resultOfBattle">
         <h1><span style={{ color: playersColors[attakerIndex] }}>{playersNames[attakerIndex]}</span> IS A WINNER!</h1>
         <Link to='/' ><h3 className='restart'>BACK TO MENU</h3></Link>
@@ -67,22 +84,27 @@ function Battle() {
       </div>}
 
     {battleStatus && vsBot && //ДЛЯ БОЯ ПРОТИВ КОМПЬЮТЕРА
+
       <div className="battle">
-        <h1>BATTLE!</h1>
-        <h2>ПОЛЕ <span style={{ color: playersColors[1] }}>КОМПЬЮТЕРА</span></h2>
-        <BattleField
-          index={1}
-          miss={shoot}
-          shipsOut={gameOver}
-          whoseTurn={whoseTurn}
-        />
-        <h2>ПОЛЕ <span style={{ color: playersColors[0] }}>ЧЕЛОВЕКА</span></h2>
-        <BattleField
-          index={0}
-          miss={shoot}
-          shipsOut={gameOver}
-          whoseTurn={whoseTurn}
-        />
+        <div className="field">
+          <h2>ПОЛЕ <span style={{ color: playersColors[1] }}>КОМПЬЮТЕРА</span></h2>
+          <BattleField
+            index={1}
+            miss={shoot}
+            shipsOut={gameOver}
+            winner={winner}
+          />
+        </div>
+        <div className="field">
+          <h2>ПОЛЕ <span style={{ color: playersColors[0] }}>ЧЕЛОВЕКА</span></h2>
+          <BattleField
+            index={0}
+            miss={shoot}
+            shipsOut={gameOver}
+            winner={winner}
+          />
+        </div>
+
       </div>}
   </>
   )

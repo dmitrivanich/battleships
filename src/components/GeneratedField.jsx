@@ -47,43 +47,41 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
               let y = Math.round(box.height * i)
               // В массиве ArrayBoxes содержатся элементы 0(пустая клетка) и 1(корабль)
               // space - отступ между клетками 
+              ctx.lineWidth = 200 / size
+
               function drawBox() {//рисует клетку
-                ctx.lineWidth = 200 / size
-                ctx.fillStyle = "#8da6bb"
                 ctx.fillRect(x, y, box.width, box.height)
                 ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
-                ctx.fillStyle = "#b8c9d6";
-                // ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
               }
 
               switch (el) {
                 case 5:
-                  ctx.strokeStyle = `rgb(0,0,0)`;
+                  ctx.strokeStyle = `rgb(200,200,60)`;
                   drawBox();
                   break;
                 case 4:
-                  ctx.strokeStyle = `rgb(0,${10 * 2},${20 * 4})`;
+                  ctx.strokeStyle = `rgb(200,150,60)`;
                   drawBox();
                   break;
                 case 3:
-                  ctx.strokeStyle = `rgb(0,${10 * 6},${20 * 6})`;
+                  ctx.strokeStyle = `rgb(200,100,60)`;
                   drawBox();
                   break;
                 case 2:
-                  ctx.strokeStyle = `rgb(0,${10 * 8},${20 * 8})`;
+                  ctx.strokeStyle = `rgb(200,50,60)`;
                   drawBox();
                   break;
                 case 1:
-                  ctx.strokeStyle = `rgb(0,${10 * 10},${20 * 10})`;
+                  ctx.strokeStyle = `rgb(200,0,60)`;
                   drawBox();
                   break;
                 default:
-                  ctx.strokeStyle = "white";
-                  ctx.lineWidth = 300 / size
-                  ctx.fillStyle = `#b8c9d6`
+                  drawBox();
+                  ctx.strokeStyle = "rgb(100, 100, 100)";
+                  ctx.fillStyle = `rgb(56, 56, 56)`
                   ctx.fillRect(x, y, box.width, box.height)
                   ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
-                  ctx.fillStyle = "#a3b7c5";
+                  ctx.fillStyle = "rgb(56, 56, 56)";
                   ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
                   break;
 
@@ -513,7 +511,7 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
                 id='shipsList__li'
                 style={{
                   color: el === quantityShips[ind]
-                    ? `rgb(0,160,60)`
+                    ? `rgb(70, 218, 83)`
                     : `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
                 }}
               >{el} :{"■".repeat(ind + 1)}: {quantityShips[ind]} {(el === quantityShips[ind]) && "✓"}</li>

@@ -1,118 +1,157 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateField, changeTurn } from '../redux/gameSlice'
+import { updateField } from '../redux/gameSlice'
+import { Link } from 'react-router-dom';
 
-export default function BattleField({ index, miss, shipsOut }) {
+export default function BattleField({ index, miss, shipsOut, winner }) {
   const playersFields = useSelector(state => state.games.playersFields)
+  const playersNames = useSelector(state => state.games.playersNames)
+  const playersColors = useSelector(state => state.games.playersColors)
   const field = playersFields[index]
   const size = useSelector(state => state.games.fieldSize)
   const vsBot = useSelector(state => state.games.vsBot)
-  const whoseTurn = useSelector(state => state.games.whoseTurn)
   const [arrayBoxes, setArrayBoxes] = useState(field);
   const [quantityShips, setQuantityShips] = useState(null);
-  const [status, setStatus] = useState(0) //0-ready, 1-miss, 2-destroyed, 3-botShooiting
-
+  const [status, setStatus] = useState(0) //0-ready, 1-miss, 2-destroyed
+  const [winnerStatus, setWinnerStatus] = useState(null)
 
   const canvasRef = useRef(null)
-
   const dispatch = useDispatch()
 
-  const whenMiss = () => {
-    if (!vsBot) {
+  useEffect(() => {
+    if (quantityShips && quantityShips.every(el => el === 0)) {
+      shipsOut(index)//закончились корабли
+    }
+    if (index === winner) {
+      setWinnerStatus(true)
+    }
+    if (winner !== null && winner !== index) {
+      setWinnerStatus(false)
+    }
+  }, [quantityShips, winner])
+
+
+  const whenMiss = () => { //если игрок промахнулся
+    if (!vsBot) { //если режим против игроков
       setStatus(1)
       setTimeout(() => setStatus(0), 500)
     } else { //в режиме против бота
       setStatus(3)
-      dispatch(changeTurn(1))//меняет очередь стрельбы
-      //здесь стреляет бот
-      //выполнится только 
       if (index === 1) {
-        shoot()
+        botShoot() //стреляет бот
       }
-      // if (whoseTurn === 1) {//если очередь стрелять - бота
-      //   shoot(Math.round(Math.random() * (size - 1)), Math.round(Math.random() * (size - 1)))
-      //   dispatch(changeTurn(0))
-      // }
       setStatus(0) //после выстрела дает возможность выстрелить
     }
   }
 
   const whenPlayerIsOut = () => {
-    setStatus(2)
-    setTimeout(() => {
-      shipsOut(index)//глобально удаляет игрока
-    }, 100)
-    setTimeout(() => {
-      setStatus(0)
-    }, 600)
+    if (!vsBot) {
+      setTimeout(() => {
+        shipsOut(index)//корабли закончились
+      }, 100)
+      setTimeout(() => {
+        setStatus(0)
+      }, 600)
+    }
 
   }
 
-  function shoot() {
-    //k - индекс строки с которой взаимодействует пользователь(y)
-    //i - индекс элемента этой строки (x) 
-    const i = Math.round(Math.random() * (size - 1))
-    const k = Math.round(Math.random() * (size - 1))
-
+  function botShoot() {
+    //Описание логики стрельбы бота
 
     const editedArray = JSON.parse(JSON.stringify(playersFields[0])) //для поля человека
-    const newRow = [...editedArray[k]]
-    const el = newRow[i]
 
-    switch (el) {
-      case 1:
-        newRow.splice(i, 1, 8) //убит
-        break;
-      case 2:
-        newRow.splice(i, 1, 7)//ранен
-        break;
-      case 3:
-        newRow.splice(i, 1, 7)//ранен
-        break;
-      case 4:
-        newRow.splice(i, 1, 7) //ранен
-        break;
-      case 5:
-        newRow.splice(i, 1, 7) //ранен
-        break;
-      case 7:
-        newRow.splice(i, 1, 7) //ранен
-        break;
-      case 8:
-        newRow.splice(i, 1, 8) //убит
-        break;
-      default:
-        newRow.splice(i, 1, 9) //мимо
-        if (!el) {
-          if (!vsBot) {
-            miss()
-            whenMiss()
-          } else {//когда режим против бота
-            whenMiss()
+    findWounded() //искать раненных
+
+    function findWounded() {
+      var visibilityOfWounded = false //видны ли раненные на поле
+      editedArray.forEach((row, y) => {
+        row.forEach((el, x) => {
+          if (el === 7) {//найден раненный
+            aimingShoot(x, y) //прицельный огонь
+            visibilityOfWounded = true
           }
-        }
-        break;
+        })
+      })
+      if (!visibilityOfWounded) {
+        randomShoot()
+      }
     }
 
-    editedArray.splice(k, 1, newRow)//обновляет изменённую строку
+    function aimingShoot(x, y) {
+
+      var hitInTarget = false //попадание в раненного
+      const newRow = [...editedArray[y]]
+
+      //бот не будет стрелять по несуществующим, по 
+      if (newRow[x + 1] !== undefined && newRow[x + 1] !== 9 && newRow[x + 1] !== 7) {
+        if (newRow[x + 1] !== 0) {
+          newRow.splice(x + 1, 1, 7) //ранен
+          //ещё выстрел
+          hitInTarget = true //попал в цель
+        } else {
+          newRow.splice(x + 1, 1, 9) //мимо
+        }
+        editedArray.splice(y, 1, newRow)
+      } else {
+        if (newRow[x - 1] !== undefined && newRow[x - 1] !== 9 && newRow[x - 1] !== 7) {
+          if (newRow[x - 1] !== 0) {
+            newRow.splice(x - 1, 1, 7) //ранен
+            //ешё выстрел
+            hitInTarget = true //попал в цель
+          } else {
+            newRow.splice(x - 1, 1, 9) //мимо
+          }
+          editedArray.splice(y, 1, newRow)
+        } else {
+        }
+      }
+
+      // if (hitInTarget === false) { randomShoot(); console.log('промах') }
+      if (hitInTarget === true) { findWounded() }
+    }
+
+    function randomShoot() {
+
+      let x = Math.round(Math.random() * (size - 1))
+      let y = Math.round(Math.random() * (size - 1))
+      const newRow = [...editedArray[y]]
+      let el = newRow[x]
+      if (el === 0 || el === 7 || el === 8 || el === 9) { //если промах
+        if (el === 0) {
+          newRow.splice(x, 1, 9) //мимо
+          editedArray.splice(y, 1, newRow)
+        } else {//еcли срандомил в никуда
+          randomShoot()
+        }
+      } else { //если попал
+        if (el === 1) {
+          newRow.splice(x, 1, 8) //убит
+          editedArray.splice(y, 1, newRow)
+          findWounded()
+        } else {//попал в клетку el = 2..5
+          newRow.splice(x, 1, 7)
+          editedArray.splice(y, 1, newRow)
+          findWounded()
+        }
+      }
+    }
 
     const doRulesField = doRules(editedArray).field
     const doRulesShips = doRules(editedArray).newQuantityShips
 
-    if (doRulesShips.every((el) => { return el === 0 })) {
+    if (doRulesShips && doRulesShips.every((el) => el === 0)) {
       whenPlayerIsOut(index)
       //если корабли закончились
     }
 
-    // setArrayBoxes(doRulesField)//обновить поле локально
+    setArrayBoxes(doRulesField)//обновить поле локально
     dispatch(updateField({ index: 0, field: doRulesField }))//глобально
   }
 
 
   useEffect(() => {
     setArrayBoxes(doRules(field).field)
-    if (!vsBot) { canvasRef.current.style.width = `70vh` }
-    if (vsBot) { canvasRef.current.style.width = `35vh` }
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -130,7 +169,7 @@ export default function BattleField({ index, miss, shipsOut }) {
         if (arrayBoxes.length > 0) {
           for (let i = 0; i < arrayBoxes.length; i++) {
             arrayBoxes[i].forEach((el, ind) => {
-              let space = 400 / size
+              let space = 500 / size
               let x = Math.round((box.width) * (ind))
               let y = Math.round(box.height * i)
               // В массиве ArrayBoxes содержатся элементы 0(пустая клетка) и 1(корабль)
@@ -139,26 +178,26 @@ export default function BattleField({ index, miss, shipsOut }) {
               ctx.lineCap = 'round'
 
               function drawDefault() {
-                ctx.strokeStyle = "white";
-                ctx.fillStyle = `#b8c9d6`
+                ctx.fillStyle = `rgb(56, 56, 56)`
                 ctx.fillRect(x, y, box.width, box.height)
+                ctx.strokeStyle = "rgb(100, 100, 100)";
                 ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
-                ctx.fillStyle = "#a3b7c5";
+                ctx.fillStyle = "rgb(50, 50, 50)";
                 ctx.fillRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
               }
 
               switch (el) {
                 case 9: //мимо
                   drawDefault();
-                  ctx.fillStyle = "#ffffff";
+                  ctx.fillStyle = "rgb(180, 180, 180)";
                   ctx.beginPath();
                   ctx.arc(x + box.width / 2, y + box.height / 2, 300 / size, 0, Math.PI * 2)
                   ctx.fill();
                   break;
                 case 8: //убил   
                   drawDefault();
-                  ctx.strokeStyle = "black";
-                  ctx.fillStyle = "black";
+                  ctx.strokeStyle = "rgb(180,30, 10)";
+                  ctx.fillStyle = "rgb(50, 50, 50)";
                   ctx.beginPath();
                   ctx.moveTo(x + space, y + space);
                   ctx.lineTo(x + box.width - space, y + box.height - space);
@@ -167,11 +206,11 @@ export default function BattleField({ index, miss, shipsOut }) {
                   ctx.moveTo(x + box.width - space, y + space);
                   ctx.lineTo(x + space, y + box.height - space);
                   ctx.stroke();
-                  ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
+                  // ctx.strokeRect(x + space / 2, y + space / 2, box.width - space, box.height - space)
                   break;
                 case 7: //ранил
                   drawDefault();
-                  ctx.strokeStyle = "#970000";
+                  ctx.strokeStyle = "rgb(190, 120,10)";
                   ctx.beginPath();
                   ctx.moveTo(x + space, y + space);
                   ctx.lineTo(x + box.width - space, y + box.height - space);
@@ -286,7 +325,7 @@ export default function BattleField({ index, miss, shipsOut }) {
       const doRulesShips = doRules(editedArray).newQuantityShips
 
 
-      if (doRulesShips.every((el) => { return el === 0 })) {
+      if (doRulesShips.every((el) => el === 0)) {
         whenPlayerIsOut(index)
         //если корабли закончились
       }
@@ -456,9 +495,6 @@ export default function BattleField({ index, miss, shipsOut }) {
         {quantityShips && quantityShips.map((el, ind) => (
           !!el && <li key={ind}
             id='shipsList__li'
-            style={{
-              color: `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
-            }}
           >{Math.round(el * 100) / 100} :{"■".repeat(ind + 1)}</li>
         ))}
       </ul>
@@ -473,12 +509,18 @@ export default function BattleField({ index, miss, shipsOut }) {
           <div className="message__text">УНИЧТОЖЕН</div>
         </div>
         }
-        {((whoseTurn !== index) && status === 3) && <div className="message computer">
-          <div className="message__text">СТРЕЛЯЕТ КОМПЬЮТЕР</div>
+        {vsBot && winnerStatus && <div className="message win">
+          <div className="message__text">ПОБЕДИЛ <br />
+            <span style={{ color: playersColors[index] }}>{playersNames[index]}
+            </span>
+          </div>
+
         </div>
         }
-        {((whoseTurn === index) && status === 3) && <div className="message computer">
-          <div className="message__text">СТРЕЛЯЕТ ИГРОК</div>
+        {vsBot && winnerStatus !== null && !winnerStatus && <div className="message loose">
+          <div className="message__text">УНИЧТОЖЕН <br />{
+            <span style={{ color: playersColors[index] }}>{playersNames[index]}</span>
+          }</div>
         </div>
         }
         <canvas
@@ -502,7 +544,7 @@ export default function BattleField({ index, miss, shipsOut }) {
         ></canvas >
 
       </div>
-    </div>
+    </div >
   )
 }
 

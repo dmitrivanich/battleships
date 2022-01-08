@@ -6,7 +6,7 @@ import Battle from "./Battle.jsx";
 import { NextIcon } from "../icons";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { changeSizeOfField, changeShipsRate, addBot, addPlayer } from '../redux/gameSlice'
+import { changeSizeOfField, changeShipsRate, addBot, addPlayer, clearPlayers } from '../redux/gameSlice'
 
 function Menu() {
   const dispatch = useDispatch()
@@ -19,6 +19,10 @@ function Menu() {
   const shipsRate = useSelector(state => state.games.shipsRate)
 
   const shipsRule = [4, 3, 2, 1, 0.4].map(value => Math.round(value * (fieldSize / 10)))
+
+  useEffect(() => {
+    dispatch(clearPlayers())
+  }, [])
 
   useEffect(() => {
     dispatch(addBot(false))
@@ -104,9 +108,6 @@ function Menu() {
                       {shipsRate.map((el, ind) => (
                         <div key={ind}>
                           <li id="valueShip"
-                            style={{
-                              color: `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
-                            }}
                           >{el} ({"■".repeat(ind + 1)})</li>
                           <input
                             type="range"
@@ -156,9 +157,24 @@ function Menu() {
           </>
         } />
 
-        <Route path="/players" element={<Creation__Players />} />
-        <Route path="/fields" element={<Creation__Fields />} />
-        <Route path="/battle" element={<Battle />} />
+        <Route path="/players" element={
+          <>
+            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Creation__Players />
+          </>
+        } />
+        <Route path="/fields" element={
+          <>
+            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Creation__Fields />
+          </>
+        } />
+        <Route path="/battle" element={
+          <>
+            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Battle />
+          </>
+        } />
       </Routes>
     </div >
   );

@@ -68,19 +68,20 @@ function Battle() {
 
     {battleStatus && !vsBot && //ДЛЯ БОЯ ПРОТИВ ИГРОКОВ
       <div className="battle">
-        <h1>BATTLE!</h1>
-        <h2>
-          <span style={{ color: playersColors[attakerIndex] }}
-          >{playersNames[attakerIndex]}</span> атакует <span style={{
-            color: playersColors[attaсkedIndices[attakedIndex]]
-          }}>{playersNames[attaсkedIndices[attakedIndex]]}</span>
-        </h2>
+        <div className="field">
+          <h2>
+            <span style={{ color: playersColors[attakerIndex] }}
+            >{playersNames[attakerIndex]}</span> атакует <span style={{
+              color: playersColors[attaсkedIndices[attakedIndex]]
+            }}>{playersNames[attaсkedIndices[attakedIndex]]}</span>
+          </h2>
 
-        <BattleField
-          index={attaсkedIndices[attakedIndex]}
-          miss={shoot}
-          shipsOut={gameOver}
-        />
+          <BattleField
+            index={attaсkedIndices[attakedIndex]}
+            miss={shoot}
+            shipsOut={gameOver}
+          />
+        </div>
       </div>}
 
     {battleStatus && vsBot && //ДЛЯ БОЯ ПРОТИВ КОМПЬЮТЕРА

@@ -5,9 +5,9 @@ const gameSlice = createSlice({
   initialState: {
     fieldSize: 10,
     shipsRate: [4, 3, 2, 1, 0.4],
-    playersNames: [],
     vsBot: false,
     playersColors: ['#96c824', '#FF7751', '#F33829', "#0EB9CB", "#809a41", "#6c6f74"],
+    playersNames: [],
     playersFields: []
   },
   reducers: {

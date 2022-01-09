@@ -1,7 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateField } from '../redux/gameSlice'
-import { Link } from 'react-router-dom';
 
 export default function BattleField({ index, miss, shipsOut, winner }) {
   const playersFields = useSelector(state => state.games.playersFields)

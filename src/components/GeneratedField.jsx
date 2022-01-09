@@ -512,7 +512,7 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
                 style={{
                   color: el === quantityShips[ind]
                     ? `rgb(70, 218, 83)`
-                    : `rgb(0,${100 - (ind * 20)},${200 - (ind * 20)})`
+                    : `rgb(200,200,200)`
                 }}
               >{el} :{"■".repeat(ind + 1)}: {quantityShips[ind]} {(el === quantityShips[ind]) && "✓"}</li>
 

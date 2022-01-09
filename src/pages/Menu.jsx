@@ -25,7 +25,6 @@ function Menu() {
   }, [])
 
   useEffect(() => {
-    dispatch(addBot(false))
     if (rules === 'standard') {
       dispatch(changeShipsRate(shipsRule))
       if (standartRef.current !== null) { standartRef.current.checked = true }
@@ -42,6 +41,11 @@ function Menu() {
     let newRate = shipsRate.slice()
     newRate.splice(ind, 1, value)
     dispatch(changeShipsRate(newRate))
+  }
+
+  function restart() {
+    dispatch(clearPlayers());
+    dispatch(addBot(false));
   }
 
   return (
@@ -159,19 +163,19 @@ function Menu() {
 
         <Route path="/players" element={
           <>
-            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Link to="/" className='toMenu' onClick={restart}>В МЕНЮ</Link>
             <Creation__Players />
           </>
         } />
         <Route path="/fields" element={
           <>
-            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Link to="/" className='toMenu' onClick={restart}>В МЕНЮ</Link>
             <Creation__Fields />
           </>
         } />
         <Route path="/battle" element={
           <>
-            <Link to="/" className='toMenu'>В МЕНЮ</Link>
+            <Link to="/" className='toMenu' onClick={restart}>В МЕНЮ</Link>
             <Battle />
           </>
         } />

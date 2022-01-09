@@ -1,5 +1,6 @@
 $color: rgb(121, 121, 121);
 $pad: 3vh; //отступ от краёв экрана
+$canvasSize: 50vh;
 
 * {
   list-style: none;
@@ -9,10 +10,11 @@ $pad: 3vh; //отступ от краёв экрана
   color: $color;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-size: 1em;
+  overflow-y: hidden;
 }
 
 html {
-  background-color: rgb(24, 24, 24);
+  background-color: rgb(43, 43, 43);
 }
 
 h1 {
@@ -30,6 +32,39 @@ li {
   font-weight: bold;
   font-size: 1em;
 }
+
+.menu {
+  h1 {
+    font-size: 3em;
+    color: rgb(228, 227, 227);
+  }
+  .toMenu {
+    color: rgb(167, 167, 167);
+    position: absolute;
+    left: 2vh;
+    top: 2vh;
+    font-size: 1.1vh;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    &:hover {
+      color: rgb(87, 87, 87);
+    }
+  }
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 93vh;
+  width: 93vw;
+  margin: 1vh auto;
+  padding-bottom: 20px;
+  text-align: center;
+  border-radius: 10px;
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
+  background-color: rgb(56, 56, 56);
+}
+
 .grid {
   position: relative;
   margin-top: 10px;
@@ -47,44 +82,13 @@ li {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
   }
 }
+
 .restart {
   color: rgb(231, 187, 40);
   margin-top: 10px;
   font-size: 1.5em;
 }
 
-.menu {
-  position: relative;
-  .toMenu {
-    color: rgb(114, 114, 114);
-    position: absolute;
-    left: 10px;
-    top: 10px;
-    font-size: 1em;
-    font-weight: bold;
-    transition: all 0.2s ease;
-    &:hover {
-      color: rgb(158, 158, 158);
-    }
-  }
-  h1 {
-    font-size: 3em;
-    color: rgb(228, 227, 227);
-  }
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 93vh;
-  width: 93vw;
-  margin: 1vh auto;
-  padding-bottom: 20px;
-  text-align: center;
-  border: 0.5vh solid rgb(88, 88, 88);
-  border-radius: 10px;
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.1);
-  background-color: rgb(56, 56, 56);
-}
 .options {
   margin: 10px 0 10px 0;
   display: flex;
@@ -142,6 +146,7 @@ li {
     -webkit-transition: 0.2s;
     transition: opacity 0.2s;
     border-radius: 5px;
+
     cursor: pointer;
     &:hover {
       opacity: 1;
@@ -173,7 +178,7 @@ li {
   align-items: center;
   h2 {
     font-size: 1.5vh;
-    margin: 10px 0 0 0;
+    margin: 1vh 0 0 0;
   }
   .grid {
     margin: 0;
@@ -354,7 +359,10 @@ li {
   align-items: center;
   user-select: none;
   flex-wrap: wrap;
-  font-size: 1.2vh;
+  font-size: 1vh;
+  width: $canvasSize - 13vh;
+  margin: 0 auto;
+  padding: 1vh 0;
 
   &__li,
   #randomize,
@@ -364,8 +372,7 @@ li {
     font-size: 1.2vh;
     justify-content: center;
     text-align: center;
-    padding: 3px 16px 6px 15px;
-    margin: 10px 5px 0px 5px;
+    padding: 3px 16px 0px 15px;
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.05);
     user-select: none;
     color: rgb(148, 147, 147);
@@ -375,12 +382,11 @@ li {
 .creationFields {
   h1 {
     color: rgb(182, 181, 181);
-    font-size: 1.5em;
+    font-size: 1.5vh;
   }
 
   #buttonsList {
     justify-content: center;
-    margin: 0 0 1vh 15px;
     #randomize,
     #next,
     #start {
@@ -389,6 +395,7 @@ li {
       transition: all 0.3s ease;
       color: rgb(51, 51, 51);
       border: none;
+      background: none;
       &:hover {
         filter: opacity(0.5);
       }
@@ -410,8 +417,8 @@ li {
   }
 
   #canvas {
-    max-width: 35vh;
-    max-height: 35vh;
+    width: $canvasSize;
+    height: $canvasSize;
   }
 }
 
@@ -419,7 +426,7 @@ li {
   #shipsList,
   #buttonsList {
     li {
-      font-size: 1.1em;
+      font-size: 1.1vh;
     }
   }
 }

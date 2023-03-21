@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react'
+import React, { useRef, useEffect, useState, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addField, addPlayer } from "../redux/gameSlice"
 import { Link } from "react-router-dom"
@@ -23,8 +23,9 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
 
   useEffect(() => {
     setMinimumOfShips([...shipsRate].map(value => Math.round(value)))
-    setArrayBoxes(doRules(field).field)
-    canvasRef.current.style.width = `70vh`
+    let currentArrayBoxes = doRules(field).field
+    setArrayBoxes(currentArrayBoxes)
+    canvasRef.current.style.width = currentArrayBoxes.length > 40 ? "86vw" : "70vh"
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -563,8 +564,8 @@ function Field({ index, nextPlayer, numberOfSelectedPlayer }) {
         <canvas
           ref={canvasRef}
           id="canvas"
-          width='3000'
-          height='3000'
+          width='3000px'
+          height='3000px'
           onMouseDown={e => {
             drawBoxes(e)
           }}

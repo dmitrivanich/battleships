@@ -66,7 +66,7 @@ function Menu() {
                   id='fieldSize'
                   type="range"
                   min='10'
-                  max='30'
+                  max='100'
                   step="2"
                   value={fieldSize} />
 

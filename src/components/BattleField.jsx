@@ -150,7 +150,9 @@ export default function BattleField({ index, miss, shipsOut, winner }) {
 
 
   useEffect(() => {
-    setArrayBoxes(doRules(field).field)
+    let currentArrayBoxes = doRules(field).field
+    setArrayBoxes(currentArrayBoxes)
+    canvasRef.current.style.width = currentArrayBoxes.length > 40 ? "80vw" : "70vh"
     canvasRef.current.style.height = canvasRef.current.style.width
   }, [field, size])
 
@@ -525,8 +527,8 @@ export default function BattleField({ index, miss, shipsOut, winner }) {
         <canvas
           ref={canvasRef}
           id="canvas"
-          width='3000'
-          height='3000'
+          width='3000px'
+          height='3000px'
           onMouseDown={e => {
             if (status === 0) {
               if (!vsBot) {
